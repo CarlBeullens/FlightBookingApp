@@ -1,6 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightBookingSystem", "FlightBookingSystem\FlightBookingSystem.csproj", "{3C812DE2-AFCA-456C-A45A-7E67CAF65839}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightService", "FlightService\FlightService.csproj", "{388E1E09-E140-4284-9AD4-C303F806A330}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingService", "BookingService\BookingService.csproj", "{0FE0B3EE-1E15-4885-AACD-C748EFFA94D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging", "Messaging\Messaging.csproj", "{F0E2BA80-62B8-41A3-A527-8BB201A41162}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{C19E7059-C72C-4D1C-A1AF-E4C348AA88CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10A27018-9FB3-44EF-91C5-2A6501F2EB1E}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +19,21 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3C812DE2-AFCA-456C-A45A-7E67CAF65839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C812DE2-AFCA-456C-A45A-7E67CAF65839}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C812DE2-AFCA-456C-A45A-7E67CAF65839}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C812DE2-AFCA-456C-A45A-7E67CAF65839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{388E1E09-E140-4284-9AD4-C303F806A330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{388E1E09-E140-4284-9AD4-C303F806A330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{388E1E09-E140-4284-9AD4-C303F806A330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{388E1E09-E140-4284-9AD4-C303F806A330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FE0B3EE-1E15-4885-AACD-C748EFFA94D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FE0B3EE-1E15-4885-AACD-C748EFFA94D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FE0B3EE-1E15-4885-AACD-C748EFFA94D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FE0B3EE-1E15-4885-AACD-C748EFFA94D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0E2BA80-62B8-41A3-A527-8BB201A41162}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0E2BA80-62B8-41A3-A527-8BB201A41162}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0E2BA80-62B8-41A3-A527-8BB201A41162}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0E2BA80-62B8-41A3-A527-8BB201A41162}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C19E7059-C72C-4D1C-A1AF-E4C348AA88CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C19E7059-C72C-4D1C-A1AF-E4C348AA88CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C19E7059-C72C-4D1C-A1AF-E4C348AA88CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C19E7059-C72C-4D1C-A1AF-E4C348AA88CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

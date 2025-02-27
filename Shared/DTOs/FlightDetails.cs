@@ -1,4 +1,4 @@
-namespace FlightService.DTOs;
+namespace Shared.DTOs;
 
 public class FlightDetails
 {

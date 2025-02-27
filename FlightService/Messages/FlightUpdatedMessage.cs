@@ -1,4 +1,4 @@
-namespace FlightService.Models;
+namespace FlightService.Messages;
 
 public class FlightUpdatedMessage
 {

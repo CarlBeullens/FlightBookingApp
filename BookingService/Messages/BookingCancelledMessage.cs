@@ -1,4 +1,4 @@
-namespace BookingService.Models;
+namespace BookingService.Messages;
 
 public class BookingCancelledMessage
 {
