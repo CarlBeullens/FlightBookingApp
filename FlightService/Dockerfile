@@ -8,7 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["FlightService/FlightService.csproj", "FlightService/"]
-COPY ["Shared/Shared.csproj", "Shared/"]
+COPY ["../Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "FlightService/FlightService.csproj"
 COPY . .
 WORKDIR "/src/FlightService"
