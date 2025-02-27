@@ -20,7 +20,8 @@ jobs:
       - name: Build and push Flight Service
         uses: docker/build-push-action@v4
         with:
-          context: ./FlightService
+          context: .  # Use repository root as context
+          file: ./FlightService/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/flightservice:latest
   
@@ -36,6 +37,7 @@ jobs:
       - name: Build and push Booking Service
         uses: docker/build-push-action@v4
         with:
-          context: ./BookingService
+          context: .  # Use repository root as context
+          file: ./BookingService/Dockerfile 
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/bookingservice:latest
