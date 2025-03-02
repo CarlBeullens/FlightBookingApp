@@ -1,11 +1,14 @@
 name: Deploy to Azure Container Apps CD
 
 on:
+  # Trigger after CI workflow completes
   workflow_run:
     workflows: ["Build and Push Docker Images CI"]
     types:
       - completed
     branches: [main]
+  # Manual trigger option
+  workflow_dispatch:
 
 permissions:
   id-token: write # Required for requesting the JWT
