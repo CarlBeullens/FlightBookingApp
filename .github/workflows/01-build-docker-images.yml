@@ -6,6 +6,8 @@ on:
     paths:
       - 'FlightService/**'
       - 'BookingService/**'
+  # Manual trigger option
+  workflow_dispatch:
 
 jobs:
   flight-service:
