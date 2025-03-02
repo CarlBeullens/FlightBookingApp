@@ -1,0 +1,55 @@
+name: Deploy to Azure Container Apps CD
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Images CI"]
+    types:
+      - completed
+    branches: [main]
+
+permissions:
+  id-token: write # Required for requesting the JWT
+  contents: read  # Required for actions/checkout
+
+jobs:
+  deploy-flight-service:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Azure login with managed identity
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
+      - name: Deploy to flight-service container app
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppName: flight-service
+          resourceGroup: dev
+          imageToDeploy: ${{ secrets.DOCKERHUB_USERNAME }}/flightservice:latest
+          registryUrl: docker.io
+          registryUsername: ${{ secrets.DOCKERHUB_USERNAME }}
+          registryPassword: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  deploy-booking-service:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Azure login with managed identity
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
+      - name: Deploy to booking-service container app
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppName: booking-service
+          resourceGroup: dev
+          imageToDeploy: ${{ secrets.DOCKERHUB_USERNAME }}/bookingservice:latest
+          registryUrl: docker.io
+          registryUsername: ${{ secrets.DOCKERHUB_USERNAME }}
+          registryPassword: ${{ secrets.DOCKERHUB_TOKEN }}
