@@ -12,8 +12,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<FlightDbContext>(options =>
 {
-    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-    options.UseSqlServer(connectionString);
+    var connectionString = builder.Environment.IsDevelopment()
+        ? builder.Configuration.GetConnectionString("Development")
+        : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+    
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null
+        );
+    });
 });
 
 builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();
