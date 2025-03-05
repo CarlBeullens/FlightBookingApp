@@ -12,8 +12,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<FlightDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseNpgsql(connectionString);
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+    options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();

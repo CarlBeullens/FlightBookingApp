@@ -12,11 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<BookingDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseNpgsql(connectionString);
-});
+// builder.Services.AddDbContext<BookingDbContext>(options =>
+// {
+//     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//     options.UseNpgsql(connectionString);
+// });
 
 builder.Services.AddRefitClient<IFlightClientService>()
     .ConfigureHttpClient(client =>
