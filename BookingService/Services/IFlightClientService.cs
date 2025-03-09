@@ -6,8 +6,8 @@ namespace BookingService.Services;
 public interface IFlightClientService
 { 
     [Get("/api/flight")]
-    Task<IReadOnlyCollection<FlightDetails>> GetAllFlightDetailsAsync();
+    Task<IReadOnlyCollection<FlightDetailsDto>> GetAllFlightDetailsAsync();
 
     [Get("/api/flight/{id}")]
-    Task<FlightDetails?> GetFlightDetailsByIdAsync(Guid id);
+    Task<FlightDetailsDto?> GetFlightDetailsByIdAsync(Guid id);
 }

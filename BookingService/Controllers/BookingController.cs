@@ -18,7 +18,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
     }
     
     [HttpGet("flights")]
-    public async Task<ActionResult<IReadOnlyCollection<FlightDetails>>> GetAllFlightDetailsAsync()
+    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsDto>>> GetAllFlightDetailsAsync()
     {
         try
         {

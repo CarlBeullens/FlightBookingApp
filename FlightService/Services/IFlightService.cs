@@ -1,4 +1,5 @@
 using FlightService.Models;
+using Shared.DTOs;
 
 namespace FlightService.Services;
 
@@ -11,4 +12,6 @@ public interface IFlightService
     Task<Flight> CreateFlightAsync(Flight flight);
     
     Task DeleteFlightAsync(Guid id);
+
+    Task<IReadOnlyCollection<Flight>> SearchFlightsAsync(FlightSearchRequestDto searchRequest);
 }

@@ -12,11 +12,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// builder.Services.AddDbContext<BookingDbContext>(options =>
-// {
-//     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//     options.UseNpgsql(connectionString);
-// });
+builder.Services.AddDbContext<BookingDbContext>(options =>
+{
+    var connectionString = builder.Environment.IsDevelopment()
+        ? builder.Configuration.GetConnectionString("Development")
+        : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+    
+    Console.WriteLine($"Using connection string: {connectionString}");
+    
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null
+        );
+    });
+});
 
 builder.Services.AddRefitClient<IFlightClientService>()
     .ConfigureHttpClient(client =>

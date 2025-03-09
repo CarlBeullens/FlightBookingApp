@@ -64,10 +64,10 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         return booking;
     }
     
-    public async Task<IReadOnlyCollection<FlightDetails>> GetAllFlightDetailsAsync()
+    public async Task<IReadOnlyCollection<FlightDetailsDto>> GetAllFlightDetailsAsync()
     {
         var flights = await _flightServiceClient.GetAllFlightDetailsAsync();
 
-        return flights ?? new List<FlightDetails>();      
+        return flights ?? new List<FlightDetailsDto>();      
     }
 }

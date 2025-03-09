@@ -10,12 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionString = builder.Environment.IsDevelopment()
+    ? builder.Configuration.GetConnectionString("Development")
+    : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+
 builder.Services.AddDbContext<FlightDbContext>(options =>
 {
-    var connectionString = builder.Environment.IsDevelopment()
-        ? builder.Configuration.GetConnectionString("Development")
-        : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-    
     options.UseSqlServer(connectionString, sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
@@ -36,8 +36,9 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<FlightDbContext>();
+        app.Logger.LogInformation("Using connection string: {connectionString}", connectionString);
         await context.Database.MigrateAsync();
-        app.Logger.LogInformation("Database migrated successfully");
+        app.Logger.LogInformation("Database migrated successfully or already up to date");
     }
     catch (Exception ex)
     {

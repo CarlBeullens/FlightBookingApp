@@ -13,5 +13,5 @@ public interface IBookingService
     
     Task<Booking> CreateBookingAsync(Booking booking);
     
-    Task<IReadOnlyCollection<FlightDetails>> GetAllFlightDetailsAsync();
+    Task<IReadOnlyCollection<FlightDetailsDto>> GetAllFlightDetailsAsync();
 }

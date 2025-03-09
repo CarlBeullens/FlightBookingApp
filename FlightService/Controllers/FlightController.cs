@@ -11,16 +11,24 @@ public class FlightController(IFlightService service) : ControllerBase
 {
     private readonly IFlightService _service = service;
 
+    [HttpGet("search")]
+    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsDto>>> SearchFlightsAsync([FromQuery] FlightSearchRequestDto searchRequest)
+    {
+        var flights = await _service.SearchFlightsAsync(searchRequest);
+        
+        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsDto>>());
+    }
+    
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<FlightDetails>>> GetAllFlightDetailsAsync()
+    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsDto>>> GetAllFlightDetailsAsync()
     {
         var flights = await _service.GetAllFlightsAsync();
         
-        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetails>>());
+        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsDto>>());
     }
     
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<FlightDetails?>> GetFlightDetailsByIdAsync(Guid id)
+    public async Task<ActionResult<FlightDetailsDto?>> GetFlightDetailsByIdAsync(Guid id)
     {
         var flight = await _service.GetFlightByIdAsync(id);
         
@@ -29,6 +37,6 @@ public class FlightController(IFlightService service) : ControllerBase
             return NotFound();
         }
         
-        return Ok(flight.Adapt<FlightDetails>());
+        return Ok(flight.Adapt<FlightDetailsDto>());
     }
 }

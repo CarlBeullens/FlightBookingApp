@@ -1,6 +1,6 @@
 namespace Shared.DTOs;
 
-public class FlightDetails
+public class FlightDetailsDto
 {
     public string FlightNumber { get; set; } = string.Empty;
     
