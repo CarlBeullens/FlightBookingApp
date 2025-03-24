@@ -13,100 +13,131 @@ public static class FlightSeeder
                 Id = Guid.NewGuid(),
                 FlightNumber = "LH450",
                 DepartureCity = "Frankfurt",
+                DepartureLocationCode = "CFRA",
                 ArrivalCity = "London",
+                ArrivalLocationCode = "CLON",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 07:30:00"), DateTimeKind.Utc),
                 ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 08:45:00"), DateTimeKind.Utc),
-                Price = 149.99M
+                Price = 149.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = "AF220",
                 DepartureCity = "Paris",
+                DepartureLocationCode = "CPAR",
                 ArrivalCity = "Rome",
+                ArrivalLocationCode = "CROM",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 09:00:00"), DateTimeKind.Utc),
                 ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 11:00:00"), DateTimeKind.Utc),
-                Price = 179.99M
+                Price = 179.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = "IB340",
                 DepartureCity = "Madrid",
-                ArrivalCity = "Amsterdam",
+                DepartureLocationCode = "CMAD",
+                ArrivalCity = "Barcelona",
+                ArrivalLocationCode = "CBCN",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 10:15:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 12:45:00"), DateTimeKind.Utc),
-                Price = 165.50M
+                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 11:30:00"), DateTimeKind.Utc),
+                Price = 120.50M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
-                FlightNumber = "SK110",
-                DepartureCity = "Stockholm",
-                ArrivalCity = "Berlin",
+                FlightNumber = "BA110",
+                DepartureCity = "London",
+                DepartureLocationCode = "CLON",
+                ArrivalCity = "Munich",
+                ArrivalLocationCode = "CMUC",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 11:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 13:15:00"), DateTimeKind.Utc),
-                Price = 142.99M
+                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 14:15:00"), DateTimeKind.Utc),
+                Price = 162.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = "LX225",
                 DepartureCity = "Zurich",
-                ArrivalCity = "Vienna",
+                DepartureLocationCode = "CZRH",
+                ArrivalCity = "Milan",
+                ArrivalLocationCode = "CMIL",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 14:00:00"), DateTimeKind.Utc),
                 ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 15:30:00"), DateTimeKind.Utc),
-                Price = 155.99M
+                Price = 155.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = "EK050",
                 DepartureCity = "London",
-                ArrivalCity = "Dubai",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 22:15:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-02 08:45:00"), DateTimeKind.Utc),
-                Price = 459.99M
+                DepartureLocationCode = "CLON",
+                ArrivalCity = "Nice",
+                ArrivalLocationCode = "CNCE",
+                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 16:15:00"), DateTimeKind.Utc),
+                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 19:00:00"), DateTimeKind.Utc),
+                Price = 179.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = "SQ333",
                 DepartureCity = "Frankfurt",
-                ArrivalCity = "Singapore",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 21:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-02 16:45:00"), DateTimeKind.Utc),
-                Price = 689.99M
+                DepartureLocationCode = "CFRA",
+                ArrivalCity = "Berlin",
+                ArrivalLocationCode = "CBER",
+                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 08:30:00"), DateTimeKind.Utc),
+                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 09:45:00"), DateTimeKind.Utc),
+                Price = 129.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = "AA190",
                 DepartureCity = "Paris",
+                DepartureLocationCode = "CPAR",
                 ArrivalCity = "New York",
+                ArrivalLocationCode = "CNYC",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 10:45:00"), DateTimeKind.Utc),
                 ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 13:15:00"), DateTimeKind.Utc),
-                Price = 549.99M
+                Price = 549.99M,
+                AvailableSeats = 100
+                    
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
-                FlightNumber = "TK780",
-                DepartureCity = "Amsterdam",
-                ArrivalCity = "Istanbul",
+                FlightNumber = "BA780",
+                DepartureCity = "London",
+                DepartureLocationCode = "CLON",
+                ArrivalCity = "Madrid",
+                ArrivalLocationCode = "CMAD",
                 DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 15:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 20:00:00"), DateTimeKind.Utc),
-                Price = 229.99M
+                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 18:45:00"), DateTimeKind.Utc),
+                Price = 189.99M,
+                AvailableSeats = 100
             },
             new Flight
             {
                 Id = Guid.NewGuid(),
-                FlightNumber = "QR445",
+                FlightNumber = "AF445",
                 DepartureCity = "Rome",
-                ArrivalCity = "Doha",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 23:00:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-02 06:30:00"), DateTimeKind.Utc),
-                Price = 419.99M
+                DepartureLocationCode = "CROM",
+                ArrivalCity = "Paris",
+                ArrivalLocationCode = "CPAR",
+                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 18:00:00"), DateTimeKind.Utc),
+                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 20:15:00"), DateTimeKind.Utc),
+                Price = 169.99M,
+                AvailableSeats = 100
             }
         );
     }

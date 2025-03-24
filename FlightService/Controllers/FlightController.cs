@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using FlightService.Services;
 using Mapster;
 using Shared.DTOs;
+using Shared.DTOs.Flights;
 
 namespace FlightService.Controllers;
 
@@ -12,23 +13,23 @@ public class FlightController(IFlightService service) : ControllerBase
     private readonly IFlightService _service = service;
 
     [HttpGet("search")]
-    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsDto>>> SearchFlightsAsync([FromQuery] FlightSearchRequestDto searchRequest)
+    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> SearchFlightsAsync([FromQuery] FlightSearchRequest searchRequest)
     {
         var flights = await _service.SearchFlightsAsync(searchRequest);
         
-        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsDto>>());
+        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
     }
     
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsDto>>> GetAllFlightDetailsAsync()
+    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
     {
         var flights = await _service.GetAllFlightsAsync();
         
-        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsDto>>());
+        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
     }
     
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<FlightDetailsDto?>> GetFlightDetailsByIdAsync(Guid id)
+    public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(Guid id)
     {
         var flight = await _service.GetFlightByIdAsync(id);
         
@@ -37,6 +38,6 @@ public class FlightController(IFlightService service) : ControllerBase
             return NotFound();
         }
         
-        return Ok(flight.Adapt<FlightDetailsDto>());
+        return Ok(flight.Adapt<FlightDetailsResponse>());
     }
 }

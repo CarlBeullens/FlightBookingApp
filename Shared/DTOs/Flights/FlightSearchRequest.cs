@@ -1,6 +1,9 @@
-namespace Shared.DTOs;
+namespace Shared.DTOs.Flights;
 
-public class FlightSearchRequestDto
+/// <summary>
+/// Request model for the get flight details endpoint
+/// </summary>
+public class FlightSearchRequest
 {
     public string? DepartureCity { get; set; }
     

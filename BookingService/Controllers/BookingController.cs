@@ -1,6 +1,7 @@
 using BookingService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
+using Shared.DTOs.Flights;
 
 namespace BookingService.Controllers;
 
@@ -18,7 +19,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
     }
     
     [HttpGet("flights")]
-    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsDto>>> GetAllFlightDetailsAsync()
+    public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
     {
         try
         {

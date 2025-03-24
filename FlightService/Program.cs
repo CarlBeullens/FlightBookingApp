@@ -1,6 +1,8 @@
+using FlightService.Configuration;
 using FlightService.Data;
 using FlightService.Services;
 using Microsoft.EntityFrameworkCore;
+using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -11,10 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Environment.IsDevelopment()
-    ? builder.Configuration.GetConnectionString("Development")
+    ? builder.Configuration.GetConnectionString("LocalFlightServiceDb")
     : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
-builder.Services.AddDbContext<FlightDbContext>(options =>
+builder.Services.AddDbContext<FlightServiceDbContext>(options =>
 {
     options.UseSqlServer(connectionString, sqlOptions =>
     {
@@ -26,7 +28,27 @@ builder.Services.AddDbContext<FlightDbContext>(options =>
     });
 });
 
+// Register the Amadeus auth API
+builder.Services.AddRefitClient<IAmadeusAuthApiClient>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["AmadeusBaseUrl"] ?? "https://test.api.amadeus.com");
+        c.Timeout = TimeSpan.FromSeconds(10);
+    });
+
+// Register the Amadeus services API
+builder.Services.AddRefitClient<IAmadeusApiClient>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration["AmadeusBaseUrl"] ?? "https://test.api.amadeus.com");
+        c.Timeout = TimeSpan.FromSeconds(10);
+    });
+
 builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();
+builder.Services.AddScoped<IDestinationService, DestinationService>();
+
+builder.Services.Configure<AmadeusOptions>(
+    builder.Configuration.GetSection(AmadeusOptions.Token));
 
 var app = builder.Build();
 
@@ -35,7 +57,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<FlightDbContext>();
+        var context = services.GetRequiredService<FlightServiceDbContext>();
         app.Logger.LogInformation("Using connection string: {connectionString}", connectionString);
         await context.Database.MigrateAsync();
         app.Logger.LogInformation("Database migrated successfully or already up to date");

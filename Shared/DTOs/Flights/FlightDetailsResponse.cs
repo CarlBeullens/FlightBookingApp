@@ -1,12 +1,19 @@
-namespace Shared.DTOs;
+namespace Shared.DTOs.Flights;
 
-public class FlightDetailsDto
+/// <summary>
+/// Response model for the get flight details endpoint
+/// </summary>
+public class FlightDetailsResponse
 {
     public string FlightNumber { get; set; } = string.Empty;
     
     public string DepartureCity { get; set; } = string.Empty;
     
+    public string DepartureLocationCode { get; set; } = string.Empty;
+    
     public string ArrivalCity { get; set; } = string.Empty;
+    
+    public string ArrivalLocationCode { get; set; } = string.Empty;
     
     public DateTime DepartureTime { get; set; }
     

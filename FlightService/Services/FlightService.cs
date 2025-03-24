@@ -2,14 +2,15 @@ using FlightService.Data;
 using FlightService.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
+using Shared.DTOs.Flights;
 
 namespace FlightService.Services;
 
-public class FlightService(FlightDbContext context) : IFlightService
+public class FlightService(FlightServiceDbContext context) : IFlightService
 {
-    private readonly FlightDbContext _context = context;
+    private readonly FlightServiceDbContext _context = context;
     
-    public async Task<IReadOnlyCollection<Flight>> SearchFlightsAsync(FlightSearchRequestDto searchRequest)
+    public async Task<IReadOnlyCollection<Flight>> SearchFlightsAsync(FlightSearchRequest searchRequest)
     {
         var query = _context.Flights.AsQueryable();
         

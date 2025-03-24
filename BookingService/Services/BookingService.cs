@@ -2,6 +2,7 @@ using BookingService.Data;
 using BookingService.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
+using Shared.DTOs.Flights;
 
 namespace BookingService.Services;
 
@@ -64,10 +65,10 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         return booking;
     }
     
-    public async Task<IReadOnlyCollection<FlightDetailsDto>> GetAllFlightDetailsAsync()
+    public async Task<IReadOnlyCollection<FlightDetailsResponse>> GetAllFlightDetailsAsync()
     {
         var flights = await _flightServiceClient.GetAllFlightDetailsAsync();
 
-        return flights ?? new List<FlightDetailsDto>();      
+        return flights ?? new List<FlightDetailsResponse>();      
     }
 }
