@@ -1,6 +1,9 @@
-namespace BookingService.Models;
+namespace Shared.DTOs.Bookings;
 
-public class Booking
+/// <summary>
+/// Response model for the create bookings endpoint
+/// </summary>
+public class CreateBookingResponse
 {
     public Guid Id { get; set; }
     
@@ -16,5 +19,5 @@ public class Booking
     
     public decimal TotalPrice { get; set; }
 
-    public string Status { get; set; } = BookingStatus.None;
+    public string Status { get; set; } = string.Empty;
 }

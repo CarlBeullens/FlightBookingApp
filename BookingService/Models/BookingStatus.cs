@@ -1,9 +1,9 @@
 namespace BookingService.Models;
 
-public enum BookingStatus
+public static class BookingStatus
 {
-    None = 0,
-    Pending = 1,
-    Confirmed = 2,
-    Cancelled = 3
+    public static readonly string None = "None";
+    public static readonly string Pending = "Pending";
+    public static readonly string Confirmed = "Confirmed";
+    public static readonly string Cancelled = "Cancelled";
 }

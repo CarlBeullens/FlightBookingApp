@@ -2,6 +2,7 @@ using FlightService.Configuration;
 using FlightService.Data;
 using FlightService.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,14 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Flight Service API"
+    });
+});
 
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("LocalFlightServiceDb")

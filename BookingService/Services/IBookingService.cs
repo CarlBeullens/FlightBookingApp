@@ -1,5 +1,4 @@
 using BookingService.Models;
-using Shared.DTOs;
 using Shared.DTOs.Flights;
 
 namespace BookingService.Services;
@@ -10,9 +9,15 @@ public interface IBookingService
     
     Task<Booking?> GetBookingByIdAsync(Guid id);
     
-    Task<IReadOnlyCollection<Booking>> GetBookingsByPassengerEmailAsync(string email);
+    Task<IReadOnlyCollection<Booking>> GetBookingsByEmailAsync(string email);
     
-    Task<Booking> CreateBookingAsync(Booking booking);
+    Task<Booking?> CreateBookingAsync(Booking booking);
+
+    Task<Booking?> ConfirmBookingAsync(Guid id);
+    
+    Task<Booking?> CancelBookingAsync(Guid id);
     
     Task<IReadOnlyCollection<FlightDetailsResponse>> GetAllFlightDetailsAsync();
+    
+    Task<FlightDetailsResponse?> GetFlightDetailsByIdAsync(Guid id);
 }

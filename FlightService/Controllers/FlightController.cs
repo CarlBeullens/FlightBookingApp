@@ -12,6 +12,13 @@ public class FlightController(IFlightService service) : ControllerBase
 {
     private readonly IFlightService _service = service;
 
+    [HttpGet("isAlive")]
+    public ActionResult<string> IsAlive()
+    {
+        return Ok("Flight Service is alive!");
+    }
+    
+    [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [HttpGet("search")]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> SearchFlightsAsync([FromQuery] FlightSearchRequest searchRequest)
     {
@@ -20,6 +27,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
     }
     
+    [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
     {
@@ -28,6 +36,8 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
     }
     
+    [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(Guid id)
     {

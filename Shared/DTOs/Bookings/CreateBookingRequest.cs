@@ -1,9 +1,10 @@
-namespace BookingService.Models;
+namespace Shared.DTOs.Bookings;
 
-public class Booking
+/// <summary>
+/// Request model for the create bookings endpoint
+/// </summary>
+public class CreateBookingRequest
 {
-    public Guid Id { get; set; }
-    
     public Guid FlightId { get; set; }
     
     public string PassengerName { get; set; } = string.Empty;
@@ -16,5 +17,5 @@ public class Booking
     
     public decimal TotalPrice { get; set; }
 
-    public string Status { get; set; } = BookingStatus.None;
+    public string Status { get; set; } = string.Empty;
 }

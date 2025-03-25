@@ -1,6 +1,7 @@
 using BookingService.Data;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,14 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Booking Service API"
+    });
+});
 
 builder.Services.AddDbContext<BookingDbContext>(options =>
 {

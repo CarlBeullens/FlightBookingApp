@@ -18,6 +18,6 @@ public class BookingDbContext(DbContextOptions<BookingDbContext> options) : DbCo
         modelBuilder.Entity<Booking>().Property(b => b.BookingDate).IsRequired();
         modelBuilder.Entity<Booking>().Property(b => b.NumberOfSeats).IsRequired();
         modelBuilder.Entity<Booking>().Property(b => b.TotalPrice).HasColumnType("decimal(18,2)");
-        modelBuilder.Entity<Booking>().Property(b => b.Status).IsRequired();
+        modelBuilder.Entity<Booking>().Property(b => b.Status).HasMaxLength(10).IsRequired();
     }
 }

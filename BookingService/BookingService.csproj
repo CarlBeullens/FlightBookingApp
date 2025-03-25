@@ -5,10 +5,13 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn> <!-- Suppresses warnings about missing XML comments during docs generation -->
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
+        <PackageReference Include="Mapster" Version="7.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10"/>
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
