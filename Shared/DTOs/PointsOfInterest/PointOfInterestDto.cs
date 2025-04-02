@@ -1,7 +1,7 @@
 namespace Shared.DTOs.PointsOfInterest;
 
 /// <summary>
-/// Data transfer object for the get points of interest endpoint
+/// Data transfer object representing a point of interest
 /// </summary>
 public class PointOfInterestDto
 {

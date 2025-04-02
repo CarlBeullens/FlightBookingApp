@@ -6,9 +6,11 @@ public class Booking
     
     public Guid FlightId { get; set; }
     
-    public string PassengerName { get; set; } = string.Empty;
+    public string BookingReference { get; set; } = string.Empty;
     
-    public string PassengerEmail { get; set; } = string.Empty;
+    public string PrimaryContactName { get; set; } = string.Empty;
+    
+    public string PrimaryContactEmail { get; set; } = string.Empty;
     
     public int NumberOfSeats { get; set; }
     
@@ -16,5 +18,9 @@ public class Booking
     
     public decimal TotalPrice { get; set; }
 
-    public string Status { get; set; } = BookingStatus.None;
+    public string BookingStatus { get; set; } = Models.BookingStatus.None;
+    
+    public string PaymentStatus { get; set; } = Models.PaymentStatus.None;
+    
+    public ICollection<Passenger> Passengers { get; set; } = new List<Passenger>();
 }

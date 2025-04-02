@@ -1,15 +1,17 @@
 using FlightService.Data;
 using FlightService.Models;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
 using Shared.DTOs.Flights;
 
 namespace FlightService.Services;
 
-public class FlightService(FlightServiceDbContext context) : IFlightService
+public class FlightService(FlightServiceDbContext context, ILogger<FlightService> logger) : IFlightService
 {
     private readonly FlightServiceDbContext _context = context;
-    
+    private readonly ILogger<FlightService> _logger = logger;
+
     public async Task<IReadOnlyCollection<Flight>> SearchFlightsAsync(FlightSearchRequest searchRequest)
     {
         var query = _context.Flights.AsQueryable();
@@ -46,6 +48,16 @@ public class FlightService(FlightServiceDbContext context) : IFlightService
     {
         return await _context.Flights.FindAsync(id);
     }
+    
+    public async Task<Flight?> GetFlightByReferenceAsync(string reference)
+    {
+        if (Guid.TryParse(reference, out var id))
+        {
+            return await GetFlightByIdAsync(id);
+        }
+
+        return await _context.Flights.SingleOrDefaultAsync(f => f.FlightNumber == reference);
+    }
 
     public async Task<Flight> CreateFlightAsync(Flight flight)
     {
@@ -66,5 +78,51 @@ public class FlightService(FlightServiceDbContext context) : IFlightService
             _context.Flights.Remove(flight);
             await _context.SaveChangesAsync();
         }
+    }
+    
+    public async Task<Result<bool>> UpdateAvailableSeatingAsync(Guid id, int seatsToReserve)
+    {
+        var flight = await GetFlightByIdAsync(id);
+
+        if (flight == null)
+        {
+            var result = new ValidationResult
+            {
+                Errors = new List<ValidationFailure>
+                {
+                    new ValidationFailure
+                    {
+                        ErrorMessage = $"Flight {id} not found"
+                    }
+                }
+            };
+
+            return Result<bool>.Failure(result);
+        }
+
+        var hasCapacity = flight.AvailableSeats >= seatsToReserve;
+
+        if (!hasCapacity)
+        {
+            _logger.LogInformation("Not enough seats available on flight {id}", id);
+            
+            var result = new ValidationResult
+            {
+                Errors = new List<ValidationFailure>
+                {
+                    new ValidationFailure
+                    {
+                        ErrorMessage = $"Not enough seats available on flight {id}"
+                    }
+                }
+            };
+
+            return Result<bool>.Failure(result);
+        }
+        
+        flight.AvailableSeats -= seatsToReserve;
+        await _context.SaveChangesAsync();
+            
+        return Result<bool>.Success(true);
     }
 }

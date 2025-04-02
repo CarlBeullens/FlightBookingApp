@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 

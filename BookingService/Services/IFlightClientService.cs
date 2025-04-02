@@ -1,3 +1,4 @@
+using BookingService.Models;
 using Refit;
 using Shared.DTOs.Flights;
 
@@ -14,4 +15,10 @@ public interface IFlightClientService
     
     [Get("/api/flight/{id}")]
     Task<FlightDetailsResponse?> GetFlightDetailsByIdAsync(Guid id);
+    
+    [Get("/api/flight/{reference}")]
+    Task<FlightDetailsResponse?> GetFlightDetailsByReferenceAsync(string reference);
+
+    [Patch("/api/flight/seats/{id}")]
+    Task<Result<bool>> UpdateAvailableSeatingAsync(Guid id, int seatsToReserve);
 }

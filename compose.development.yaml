@@ -40,7 +40,16 @@
     volumes:
       - flight-service-db-data-local:/var/opt/mssql
     user: "0:0"  # Run as root user to avoid permission issues
-  
+    
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001" # Redis Insight
+    volumes:
+      - redis-data:/data
+
 volumes:
   booking-service-db-data-local:
   flight-service-db-data-local:
+  redis-data:

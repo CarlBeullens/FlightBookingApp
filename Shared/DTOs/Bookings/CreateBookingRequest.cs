@@ -1,3 +1,5 @@
+using Shared.DTOs.Passengers;
+
 namespace Shared.DTOs.Bookings;
 
 /// <summary>
@@ -5,17 +7,13 @@ namespace Shared.DTOs.Bookings;
 /// </summary>
 public class CreateBookingRequest
 {
-    public Guid FlightId { get; set; }
+    public Guid? FlightId { get; set; }
     
-    public string PassengerName { get; set; } = string.Empty;
+    public string? FlightNumber { get; set; }
     
-    public string PassengerEmail { get; set; } = string.Empty;
+    public required string PrimaryContactName { get; set; }
     
-    public int NumberOfSeats { get; set; }
-    
-    public DateTime BookingDate { get; set; }
-    
-    public decimal TotalPrice { get; set; }
+    public required string PrimaryContactEmail { get; set; }
 
-    public string Status { get; set; } = string.Empty;
+    public required List<PassengerDto> Passengers { get; set; } = new List<PassengerDto>();
 }

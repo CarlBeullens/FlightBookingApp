@@ -5,19 +5,23 @@ namespace Shared.DTOs.Bookings;
 /// </summary>
 public class CreateBookingResponse
 {
-    public Guid Id { get; set; }
+    public required Guid BookingId { get; set; }
     
-    public Guid FlightId { get; set; }
+    public required string BookingReference { get; set; }
     
-    public string PassengerName { get; set; } = string.Empty;
+    public required Guid FlightId { get; set; }
     
-    public string PassengerEmail { get; set; } = string.Empty;
+    public required string PrimaryContactName { get; set; }
     
-    public int NumberOfSeats { get; set; }
+    public required string PrimaryContactEmail { get; set; }
     
-    public DateTime BookingDate { get; set; }
+    public required int NumberOfSeats { get; set; }
     
-    public decimal TotalPrice { get; set; }
+    public required DateTime BookingDate { get; set; }
+    
+    public required decimal TotalPrice { get; set; }
 
-    public string Status { get; set; } = string.Empty;
+    public required string BookingStatus { get; set; }
+    
+    public required string PaymentStatus { get; set; }
 }

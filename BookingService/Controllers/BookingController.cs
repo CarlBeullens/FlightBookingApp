@@ -1,6 +1,8 @@
+using BookingService.Extensions;
+using BookingService.Mappers;
 using BookingService.Models;
 using BookingService.Services;
-using Mapster;
+using BookingService.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs.Bookings;
 using Shared.DTOs.Flights;
@@ -29,29 +31,64 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return Ok(bookings);
     }
     
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name="GetBookingById")]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Booking>> GetBookingByIdAsync(Guid id)
     {
         var booking = await _service.GetBookingByIdAsync(id);
         
-        if (booking is null)
+        return booking == null 
+            ? NotFound(new ProblemDetails
+            {
+                Title = "No result found",
+                Detail = $"Booking with id {id} not found",
+                Status = StatusCodes.Status404NotFound
+            }) 
+            : Ok(booking);
+    }
+    
+    [HttpGet("reference/{reference}")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Booking>> GetBookingByReferenceAsync(string reference)
+    {
+        var validationResult = BookingValidator.ValidateBookingReference(reference);
+        
+        if (!validationResult.IsValid)
         {
-            return NotFound();
+            var details = new ProblemDetails
+            {
+                Title = "Validation Failed",
+                Detail = "Booking reference (PNR) must be 6 characters long",
+                Status = StatusCodes.Status400BadRequest
+            };
+            
+            return BadRequest(details);
         }
+        
+        var booking = await _service.GetBookingByReferenceAsync(reference);
         
         return Ok(booking);
     }
     
     [HttpGet("email/{email}")]
     [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyCollection<Booking>>> GetBookingsByEmailAsync(string email)
     {
-        if (string.IsNullOrEmpty(email))
+        var validationResult = BookingValidator.ValidateEmail(email);
+
+        if (!validationResult.IsValid)
         {
-            return BadRequest("Email cannot be empty");
+            var details = new ProblemDetails
+            {
+                Title = "Validation Failed",
+                Detail = "Email format was invalid",
+                Status = StatusCodes.Status400BadRequest
+            };
+            
+            return BadRequest(details);
         }
         
         var bookings = await _service.GetBookingsByEmailAsync(email);
@@ -61,54 +98,57 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
 
     [HttpPost("create")]
     [ProducesResponseType(typeof(CreateBookingResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<CreateBookingResponse>> CreateBookingAsync([FromBody] CreateBookingRequest request)
     {
-        // add validation on the request
+        var validationResult = BookingValidator.ValidateForCreation(request);
         
-        var booking = request.Adapt<Booking>();
-        
-        var createdBooking = await _service.CreateBookingAsync(booking);
+        if (!validationResult.IsValid)
+        {
+            var errorMessage = validationResult.Errors.First().ErrorMessage ?? "validation error";
+            
+            _logger.LogError("Validation failed: {detail}", errorMessage);
+            
+            return this.ValidationErrorProblem(errorMessage);
+        }
+
+        var createdBooking = await _service.CreateBookingAsync(request);
 
         if (createdBooking == null)
         {
-            _logger.LogWarning("Failed to create booking");
-            return StatusCode(500, "Failed to create booking");
+            var errorMessage = "Failed to create booking";
+            
+            _logger.LogError(errorMessage);
+            
+            return this.ServerErrorProblem(errorMessage);
         }
 
-        var response = createdBooking.Adapt<CreateBookingResponse>();
-        
-        return CreatedAtAction(nameof(GetBookingByIdAsync), new { id = response.Id }, response);
+        var response = createdBooking.ToResponse();
+
+        return CreatedAtRoute("GetBookingById", new { id = response.BookingId }, response);
     }
     
     [HttpPatch("confirm/{id:guid}")]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Booking>> ConfirmBookingAsync(Guid id)
     {
-        var booking = await _service.ConfirmBookingAsync(id);
-        
-        if (booking == null)
-        {
-            return NotFound($"Booking with ID {id} not found");
-        }
+        var result = await _service.ConfirmBookingAsync(id);
 
-        return Ok(booking);
+        return result.IsSuccess ? Ok(result.Data) : result.HandleValidationErrors(this);
     }
 
     [HttpPatch("cancel/{id:guid}")]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Booking>> CancelBookingAsync(Guid id)
     {
-        var booking = await _service.CancelBookingAsync(id);
+        var result = await _service.CancelBookingAsync(id);
         
-        if (booking == null)
-        {
-            return NotFound($"Booking with ID {id} not found");
-        }
-
-        return Ok(booking);
+        return result.IsSuccess ? Ok(result.Data) : result.HandleValidationErrors(this);
     }
     
     [HttpGet("flights")]

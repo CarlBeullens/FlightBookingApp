@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
@@ -20,14 +21,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var connectionString = builder.Environment.IsDevelopment()
+    ? builder.Configuration.GetConnectionString("LocalBookingServiceDb")
+    : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+
 builder.Services.AddDbContext<BookingDbContext>(options =>
 {
-    var connectionString = builder.Environment.IsDevelopment()
-        ? builder.Configuration.GetConnectionString("Development")
-        : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-    
-    Console.WriteLine($"Using connection string: {connectionString}");
-    
     options.UseSqlServer(connectionString, sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
@@ -38,16 +37,43 @@ builder.Services.AddDbContext<BookingDbContext>(options =>
     });
 });
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    var redisConnectionString = builder.Environment.IsDevelopment()
+        ? builder.Configuration.GetConnectionString("LocalRedisDb")
+        : Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
+    
+    options.Configuration = redisConnectionString;
+    options.InstanceName = "BookingService_";
+});
+
 builder.Services.AddRefitClient<IFlightClientService>()
     .ConfigureHttpClient(client =>
     {
-        var uri = builder.Configuration["FlightService:BaseUrl"] ?? "http://localhost:6000/";
+        var uri = builder.Configuration["FlightService:BaseUrl"] ?? "http://localhost:5100/";
         client.BaseAddress = new Uri(uri);
     });
 
 builder.Services.AddScoped<IBookingService, BookingService.Services.BookingService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<BookingDbContext>();
+        app.Logger.LogInformation("Using connection string: {connectionString}", connectionString);
+        await context.Database.MigrateAsync();
+        app.Logger.LogInformation("Database migrated successfully or already up to date");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "An error occurred while migrating the database");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
