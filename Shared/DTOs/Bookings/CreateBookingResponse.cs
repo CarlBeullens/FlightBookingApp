@@ -11,6 +11,8 @@ public class CreateBookingResponse
     
     public required Guid FlightId { get; set; }
     
+    public required string FlightNumber { get; set; }
+    
     public required string PrimaryContactName { get; set; }
     
     public required string PrimaryContactEmail { get; set; }

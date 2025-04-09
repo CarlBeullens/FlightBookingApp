@@ -18,10 +18,12 @@ public class CacheService(IDistributedCache cache) : ICacheService
     {
         var options = new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2),
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
         };
+
+        var valueAsJson = JsonSerializer.Serialize(value);
         
-        await _cache.SetStringAsync(key, JsonSerializer.Serialize(value), options);
+        await _cache.SetStringAsync(key, valueAsJson, options);
     }
 
     public async Task RemoveAsync(string key)

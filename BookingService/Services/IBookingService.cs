@@ -24,5 +24,5 @@ public interface IBookingService
     
     Task<FlightDetailsResponse?> GetFlightDetailsByIdAsync(Guid id);
     
-    Task<FlightDetailsResponse?> GetFlightDetailsByReferenceAsync(string reference);
+    Task<FlightDetailsResponse?> GetFlightDetailsByReferenceAsync(string flightNumber);
 }

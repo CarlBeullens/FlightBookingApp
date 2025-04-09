@@ -1,14 +1,17 @@
 using BookingService.Data;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.OpenApi.Models;
 using Refit;
+using Shared.Messaging;
+using Shared.Messaging.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddConsole();
-builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -40,7 +43,7 @@ builder.Services.AddDbContext<BookingDbContext>(options =>
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     var redisConnectionString = builder.Environment.IsDevelopment()
-        ? builder.Configuration.GetConnectionString("LocalRedisDb")
+        ? builder.Configuration.GetConnectionString("LocalRedis")
         : Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
     
     options.Configuration = redisConnectionString;
@@ -53,6 +56,12 @@ builder.Services.AddRefitClient<IFlightClientService>()
         var uri = builder.Configuration["FlightService:BaseUrl"] ?? "http://localhost:5100/";
         client.BaseAddress = new Uri(uri);
     });
+
+var serviceBusConnectionString = builder.Environment.IsDevelopment()
+    ? builder.Configuration.GetConnectionString("AzureServiceBus")
+    : Environment.GetEnvironmentVariable("AZURESERVICEBUS_CONNECTION_STRING");
+
+builder.Services.AddServiceBus(serviceBusConnectionString);
 
 builder.Services.AddScoped<IBookingService, BookingService.Services.BookingService>();
 builder.Services.AddScoped<ICacheService, CacheService>();

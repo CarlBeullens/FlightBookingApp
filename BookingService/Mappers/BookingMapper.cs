@@ -27,6 +27,7 @@ public static class BookingMapper
             BookingId = booking.Id,
             BookingReference = booking.BookingReference,
             FlightId = booking.FlightId,
+            FlightNumber = booking.FlightNumber,
             PrimaryContactName = booking.PrimaryContactName,
             PrimaryContactEmail = booking.PrimaryContactEmail,
             NumberOfSeats = booking.NumberOfSeats,

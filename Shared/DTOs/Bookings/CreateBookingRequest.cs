@@ -7,9 +7,7 @@ namespace Shared.DTOs.Bookings;
 /// </summary>
 public class CreateBookingRequest
 {
-    public Guid? FlightId { get; set; }
-    
-    public string? FlightNumber { get; set; }
+    public required string FlightNumber { get; set; }
     
     public required string PrimaryContactName { get; set; }
     

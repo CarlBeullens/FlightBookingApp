@@ -1,6 +1,6 @@
-namespace BookingService.Messages;
+namespace Shared.Messaging.Models;
 
-public class BookingCancelledMessage
+public class BookingConfirmedEvent
 {
     public Guid BookingId { get; set; }
     

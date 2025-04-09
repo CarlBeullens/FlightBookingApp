@@ -16,7 +16,9 @@ public interface IFlightService
     
     Task DeleteFlightAsync(Guid id);
 
-    Task<Result<bool>> UpdateAvailableSeatingAsync(Guid id, int seatsToReserve);
+    Task<Result<int>> UpdateSeatingAfterConfirmationAsync(Guid id, int seats);
+    
+    Task<Result<int>> UpdateSeatingAfterCancellationAsync(Guid id, int seats);
 
     Task<IReadOnlyCollection<Flight>> SearchFlightsAsync(FlightSearchRequest searchRequest);
 }

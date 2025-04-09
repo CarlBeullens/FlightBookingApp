@@ -80,7 +80,7 @@ public class FlightService(FlightServiceDbContext context, ILogger<FlightService
         }
     }
     
-    public async Task<Result<bool>> UpdateAvailableSeatingAsync(Guid id, int seatsToReserve)
+    public async Task<Result<int>> UpdateSeatingAfterConfirmationAsync(Guid id, int seats)
     {
         var flight = await GetFlightByIdAsync(id);
 
@@ -97,10 +97,10 @@ public class FlightService(FlightServiceDbContext context, ILogger<FlightService
                 }
             };
 
-            return Result<bool>.Failure(result);
+            return Result<int>.Failure(result);
         }
-
-        var hasCapacity = flight.AvailableSeats >= seatsToReserve;
+        
+        var hasCapacity = flight.AvailableSeats >= seats;
 
         if (!hasCapacity)
         {
@@ -117,12 +117,40 @@ public class FlightService(FlightServiceDbContext context, ILogger<FlightService
                 }
             };
 
-            return Result<bool>.Failure(result);
+            return Result<int>.Failure(result);
         }
-        
-        flight.AvailableSeats -= seatsToReserve;
+            
+        var availableSeats = flight.AvailableSeats -= seats;
+
         await _context.SaveChangesAsync();
             
-        return Result<bool>.Success(true);
+        return Result<int>.Success(availableSeats);
+    }
+    
+    public async Task<Result<int>> UpdateSeatingAfterCancellationAsync(Guid id, int seats)
+    {
+        var flight = await GetFlightByIdAsync(id);
+
+        if (flight == null)
+        {
+            var result = new ValidationResult
+            {
+                Errors = new List<ValidationFailure>
+                {
+                    new ValidationFailure
+                    {
+                        ErrorMessage = $"Flight {id} not found"
+                    }
+                }
+            };
+
+            return Result<int>.Failure(result);
+        }
+        
+        var availableSeats = flight.AvailableSeats += seats;
+
+        await _context.SaveChangesAsync();
+            
+        return Result<int>.Success(availableSeats);
     }
 }

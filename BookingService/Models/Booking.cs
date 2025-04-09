@@ -6,6 +6,8 @@ public class Booking
     
     public Guid FlightId { get; set; }
     
+    public string FlightNumber { get; set; } = string.Empty;
+    
     public string BookingReference { get; set; } = string.Empty;
     
     public string PrimaryContactName { get; set; } = string.Empty;

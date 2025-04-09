@@ -14,6 +14,7 @@ public class BookingDbContext(DbContextOptions<BookingDbContext> options) : DbCo
         // Booking configuration
         modelBuilder.Entity<Booking>().HasKey(b => b.Id);
         modelBuilder.Entity<Booking>().Property(b => b.FlightId).IsRequired();
+        modelBuilder.Entity<Booking>().Property(b => b.FlightNumber).HasMaxLength(5).IsRequired();
         modelBuilder.Entity<Booking>().Property(b => b.BookingReference).HasMaxLength(6).IsRequired(); // PNR - Passenger Name Record codes are usually 6 characters long
         modelBuilder.Entity<Booking>().Property(b => b.PrimaryContactName).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Booking>().Property(b => b.PrimaryContactEmail).HasMaxLength(50).IsRequired();

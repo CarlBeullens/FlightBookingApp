@@ -73,7 +73,7 @@ public class FlightController(IFlightService service) : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Result<bool>>> UpdateAvailableSeats(Guid id, [FromQuery] int seatsToReserve)
     {
-        var result = await _service.UpdateAvailableSeatingAsync(id, seatsToReserve);
+        var result = await _service.UpdateSeatingAfterConfirmationAsync(id, seatsToReserve);
         
         if (!result.IsSuccess)
         {

@@ -1,13 +1,18 @@
 using FlightService.Configuration;
 using FlightService.Data;
+using FlightService.EventHandlers;
 using FlightService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Refit;
+using Shared.Messaging;
+using Shared.Messaging.Models;
+using Shared.Messaging.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
@@ -53,8 +58,17 @@ builder.Services.AddRefitClient<IAmadeusApiClient>()
         c.Timeout = TimeSpan.FromSeconds(10);
     });
 
+var serviceBusConnectionString = builder.Environment.IsDevelopment()
+    ? builder.Configuration.GetConnectionString("AzureServiceBus")
+    : Environment.GetEnvironmentVariable("AZURESERVICEBUS_CONNECTION_STRING");
+
+builder.Services.AddServiceBus(serviceBusConnectionString);
+
 builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();
 builder.Services.AddScoped<IDestinationService, DestinationService>();
+
+builder.Services.AddHostedService<BookingConfirmedHandler>();
+builder.Services.AddHostedService<BookingCancelledHandler>();
 
 builder.Services.Configure<AmadeusOptions>(
     builder.Configuration.GetSection(AmadeusOptions.Token));
