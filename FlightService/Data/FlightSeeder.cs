@@ -1,3 +1,4 @@
+using System.Globalization;
 using FlightService.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CFRA",
                 ArrivalCity = "London",
                 ArrivalLocationCode = "CLON",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 07:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 08:45:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("07:30", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("08:45", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 149.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -29,10 +31,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CPAR",
                 ArrivalCity = "Rome",
                 ArrivalLocationCode = "CROM",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 09:00:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 11:00:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("09:00", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("11:00", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 179.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -42,10 +45,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CMAD",
                 ArrivalCity = "Barcelona",
                 ArrivalLocationCode = "CBCN",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 10:15:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 11:30:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("10:15", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("11:30", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 120.50M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -55,10 +59,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CLON",
                 ArrivalCity = "Munich",
                 ArrivalLocationCode = "CMUC",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 11:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 14:15:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("11:30", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("14:15", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 162.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -68,10 +73,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CZRH",
                 ArrivalCity = "Milan",
                 ArrivalLocationCode = "CMIL",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 14:00:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 15:30:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("14:00", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("15:30", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 155.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -81,10 +87,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CLON",
                 ArrivalCity = "Nice",
                 ArrivalLocationCode = "CNCE",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 16:15:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 19:00:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("16:00", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("19:00", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 179.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -94,10 +101,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CFRA",
                 ArrivalCity = "Berlin",
                 ArrivalLocationCode = "CBER",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 08:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 09:45:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("08:30", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("09:45", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 129.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -107,10 +115,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CPAR",
                 ArrivalCity = "New York",
                 ArrivalLocationCode = "CNYC",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 10:45:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 13:15:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("10:45", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("13:15", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 549.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
                     
             },
             new Flight
@@ -121,10 +130,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CLON",
                 ArrivalCity = "Madrid",
                 ArrivalLocationCode = "CMAD",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 15:30:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 18:45:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("15:30", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("18:45", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 189.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             },
             new Flight
             {
@@ -134,10 +144,11 @@ public static class FlightSeeder
                 DepartureLocationCode = "CROM",
                 ArrivalCity = "Paris",
                 ArrivalLocationCode = "CPAR",
-                DepartureTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 18:00:00"), DateTimeKind.Utc),
-                ArrivalTime = DateTime.SpecifyKind(DateTime.Parse("2025-03-01 20:15:00"), DateTimeKind.Utc),
+                DepartureTime = TimeOnly.ParseExact("18:00", "HH:mm", CultureInfo.InvariantCulture),
+                ArrivalTime = TimeOnly.ParseExact("20:15", "HH:mm", CultureInfo.InvariantCulture),
                 Price = 169.99M,
-                AvailableSeats = 100
+                AvailableSeats = 100,
+                FlightStatus = FlightStatus.Scheduled
             }
         );
     }

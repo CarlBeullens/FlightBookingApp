@@ -13,6 +13,8 @@ public interface IFlightService
     Task<Flight?> GetFlightByReferenceAsync(string reference);
     
     Task<Flight> CreateFlightAsync(Flight flight);
+
+    public Task<Result<Flight>> CancelFlight(Guid id);
     
     Task DeleteFlightAsync(Guid id);
 

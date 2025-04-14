@@ -2,6 +2,7 @@ using FlightService.Models;
 using Microsoft.AspNetCore.Mvc;
 using FlightService.Services;
 using Mapster;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Shared.DTOs;
 using Shared.DTOs.Flights;
 
@@ -19,8 +20,8 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok("Flight Service is alive!");
     }
     
-    [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [HttpGet("search")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> SearchFlightsAsync([FromQuery] FlightSearchRequest searchRequest)
     {
         var flights = await _service.SearchFlightsAsync(searchRequest);
@@ -28,8 +29,8 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
     }
     
-    [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
     {
         var flights = await _service.GetAllFlightsAsync();
@@ -37,9 +38,9 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
     }
     
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [HttpGet("{id:guid}")]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(Guid id)
     {
         var flight = await _service.GetFlightByIdAsync(id);
@@ -52,9 +53,9 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flight.Adapt<FlightDetailsResponse>());
     }
 
+    [HttpGet("{reference}")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [HttpGet("{reference}")]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(string reference)
     {
         var flight = await _service.GetFlightByReferenceAsync(reference);
@@ -67,13 +68,39 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flight.Adapt<FlightDetailsResponse>());
     }
 
+    [HttpPatch("cancel/{id:guid}")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> CancelFlight(Guid id)
+    {
+        var result = await _service.CancelFlight(id);
+
+        if (!result.IsSuccess)
+        {
+            var notFoundError = result.ValidationResult?.Errors
+                .FirstOrDefault(e => e.ErrorMessage.Contains("not found"));
+
+            if (notFoundError != null)
+            {
+                return NotFound(new ProblemDetails
+                {
+                    Title = "Flight Not Found",
+                    Detail = notFoundError.ErrorMessage,
+                    Status = StatusCodes.Status404NotFound
+                });
+            }
+        }
+        
+        return Ok($"Flight {id} cancelled successfully");
+    }
+
     [HttpPatch("seats/{id:guid}")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<Result<bool>>> UpdateAvailableSeats(Guid id, [FromQuery] int seatsToReserve)
+    public async Task<ActionResult<Result<bool>>> UpdateAvailableSeats(Guid id, [FromQuery] int seats)
     {
-        var result = await _service.UpdateSeatingAfterConfirmationAsync(id, seatsToReserve);
+        var result = await _service.UpdateSeatingAfterConfirmationAsync(id, seats);
         
         if (!result.IsSuccess)
         {

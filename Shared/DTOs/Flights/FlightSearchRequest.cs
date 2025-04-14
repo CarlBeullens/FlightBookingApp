@@ -9,9 +9,9 @@ public class FlightSearchRequest
     
     public string? ArrivalCity { get; set; }
     
-    public DateTime? DepartureTime { get; set; }
+    public TimeOnly? DepartureTime { get; set; }
     
-    public DateTime? ArrivalTime { get; set; } 
+    public TimeOnly? ArrivalTime { get; set; } 
     
     public decimal? MaxPrice { get; set; }
 }

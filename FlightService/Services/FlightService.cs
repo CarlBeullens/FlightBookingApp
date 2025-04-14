@@ -4,12 +4,15 @@ using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
 using Shared.DTOs.Flights;
+using Shared.Messaging.Models.Flight;
+using Shared.Messaging.Services;
 
 namespace FlightService.Services;
 
-public class FlightService(FlightServiceDbContext context, ILogger<FlightService> logger) : IFlightService
+public class FlightService(FlightServiceDbContext context, IMessageService messageService, ILogger<FlightService> logger) : IFlightService
 {
     private readonly FlightServiceDbContext _context = context;
+    private readonly IMessageService _messageService = messageService;
     private readonly ILogger<FlightService> _logger = logger;
 
     public async Task<IReadOnlyCollection<Flight>> SearchFlightsAsync(FlightSearchRequest searchRequest)
@@ -69,11 +72,53 @@ public class FlightService(FlightServiceDbContext context, ILogger<FlightService
         return flight;
     }
 
+    public async Task<Result<Flight>> CancelFlight(Guid id)
+    {
+        var flight = await _context.Flights.FindAsync(id);
+
+        if (flight == null)
+        {
+            _logger.LogInformation("flight {id} not found", id);
+            
+            var validationResult = new ValidationResult
+            {
+                Errors = new List<ValidationFailure>
+                {
+                    new ValidationFailure
+                    {
+                        ErrorMessage = $"Flight {id} not found"
+                    }
+                }
+            };
+            
+            return Result<Flight>.Failure(validationResult);
+        }
+        
+        flight.FlightStatus = FlightStatus.Cancelled;
+        await _context.SaveChangesAsync();
+
+        try
+        {
+            const string queueName = "flight-cancelled";
+            
+            var payLoad = new FlightCancelledEvent { FlightId = id };
+            
+            await _messageService.PublishMessageAsync(queueName, payLoad);
+        }
+            
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while publishing flight cancelled event for flight {id}", id);
+        }
+
+        return Result<Flight>.Success(flight);
+    }
+
     public async Task DeleteFlightAsync(Guid id)
     {
         var flight = await _context.Flights.FindAsync(id);
         
-        if (flight is not null)
+        if (flight != null)
         {
             _context.Flights.Remove(flight);
             await _context.SaveChangesAsync();

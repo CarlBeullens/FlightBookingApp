@@ -20,6 +20,8 @@ public interface IBookingService
     
     Task<Result<Booking>> CancelBookingAsync(Guid id);
     
+    Task<Result<int>> UpdateBookingsAfterCancelledFlightAsync(Guid flightId);
+    
     Task<IReadOnlyCollection<FlightDetailsResponse>> GetAllFlightDetailsAsync();
     
     Task<FlightDetailsResponse?> GetFlightDetailsByIdAsync(Guid id);

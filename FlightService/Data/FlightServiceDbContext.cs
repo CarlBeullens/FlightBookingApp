@@ -20,6 +20,7 @@ public class FlightServiceDbContext(DbContextOptions<FlightServiceDbContext> opt
         modelBuilder.Entity<Flight>().Property(f => f.ArrivalCity).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Flight>().Property(f => f.ArrivalLocationCode).HasMaxLength(4).IsRequired();
         modelBuilder.Entity<Flight>().Property(f => f.Price).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<Flight>().Property(f => f.FlightStatus).HasMaxLength(10).IsRequired();
         
         //Seat configuration
         // modelBuilder.Entity<Seat>().HasKey(s => s.Id);

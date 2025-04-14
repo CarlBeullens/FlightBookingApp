@@ -14,13 +14,15 @@ public class Flight
     
     public string ArrivalLocationCode { get; set; } = string.Empty;
     
-    public DateTime DepartureTime { get; set; }
+    public TimeOnly DepartureTime { get; set; }
     
-    public DateTime ArrivalTime { get; set; }
+    public TimeOnly ArrivalTime { get; set; }
     
     public decimal Price { get; set; }
     
     public int AvailableSeats { get; set; }
+    
+    public string FlightStatus { get; set; } = string.Empty;
     
     public ICollection<Seat> Seats { get; set; } = new List<Seat>();
 }

@@ -122,7 +122,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         
         try
         {
-            var queueName = "booking-confirmed";
+            const string queueName = "booking-confirmed";
             
             var payload = new BookingConfirmedEvent
             {
@@ -165,7 +165,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
 
         try
         {
-            var queueName = "booking-cancelled";
+            const string queueName = "booking-cancelled";
             
             var payload = new BookingCancelledEvent
             {
@@ -186,7 +186,24 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
             
         return Result<Booking>.Success(booking);
     }
-    
+
+    public async Task<Result<int>> UpdateBookingsAfterCancelledFlightAsync(Guid flightId)
+    {
+        var bookings = await _context.Bookings
+            .Where(b => b.FlightId == flightId)
+            .Where(b => b.BookingStatus == BookingStatus.Confirmed)
+            .ToListAsync();
+
+        foreach (var booking in bookings)
+        {
+            booking.BookingStatus = BookingStatus.Pending;
+        }
+        
+        await _context.SaveChangesAsync();
+
+        return Result<int>.Success(bookings.Count);
+    }
+
     public async Task<IReadOnlyCollection<FlightDetailsResponse>> GetAllFlightDetailsAsync()
     {
         var flights = await _flightServiceClient.GetAllFlightDetailsAsync();
