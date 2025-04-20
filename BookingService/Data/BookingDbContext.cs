@@ -22,7 +22,6 @@ public class BookingDbContext(DbContextOptions<BookingDbContext> options) : DbCo
         modelBuilder.Entity<Booking>().Property(b => b.NumberOfSeats).IsRequired();
         modelBuilder.Entity<Booking>().Property(b => b.TotalPrice).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<Booking>().Property(b => b.BookingStatus).HasMaxLength(10).IsRequired();
-        modelBuilder.Entity<Booking>().Property(b => b.PaymentStatus).HasMaxLength(10).IsRequired();
         
         // Passenger configuration
         modelBuilder.Entity<Passenger>().HasKey(p => p.Id);

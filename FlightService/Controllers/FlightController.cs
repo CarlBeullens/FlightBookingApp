@@ -1,9 +1,7 @@
+using FlightService.Mappers;
 using FlightService.Models;
 using Microsoft.AspNetCore.Mvc;
 using FlightService.Services;
-using Mapster;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Shared.DTOs;
 using Shared.DTOs.Flights;
 
 namespace FlightService.Controllers;
@@ -22,11 +20,24 @@ public class FlightController(IFlightService service) : ControllerBase
     
     [HttpGet("search")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> SearchFlightsAsync([FromQuery] FlightSearchRequest searchRequest)
     {
         var flights = await _service.SearchFlightsAsync(searchRequest);
+
+        if (flights.Count == 0)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Title = "No Flights Found",
+                Detail = "No flights match the search criteria.",
+                Status = StatusCodes.Status404NotFound
+            });
+        }
         
-        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
+        var response = flights.ToDtoReadOnlyCollection();
+        
+        return Ok(response);
     }
     
     [HttpGet]
@@ -35,7 +46,9 @@ public class FlightController(IFlightService service) : ControllerBase
     {
         var flights = await _service.GetAllFlightsAsync();
         
-        return Ok(flights.Adapt<IReadOnlyCollection<FlightDetailsResponse>>());
+        var response = flights.ToDtoReadOnlyCollection();
+        
+        return Ok(response);
     }
     
     [HttpGet("{id:guid}")]
@@ -47,25 +60,35 @@ public class FlightController(IFlightService service) : ControllerBase
         
         if (flight is null)
         {
-            return NotFound();
+            return NotFound(new ProblemDetails
+            {
+                Title = "No Flight Found",
+                Detail = $"No flight found with {id}",
+                Status = StatusCodes.Status404NotFound
+            });
         }
         
-        return Ok(flight.Adapt<FlightDetailsResponse>());
+        return Ok(flight.ToDto());
     }
 
     [HttpGet("{reference}")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(string reference)
+    public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByReferenceAsync(string reference)
     {
         var flight = await _service.GetFlightByReferenceAsync(reference);
         
         if (flight is null)
         {
-            return NotFound();
+            return NotFound(new ProblemDetails
+            {
+                Title = "No Flight Found",
+                Detail = $"No flight found with reference {reference}",
+                Status = StatusCodes.Status404NotFound
+            });
         }
         
-        return Ok(flight.Adapt<FlightDetailsResponse>());
+        return Ok(flight.ToDto());
     }
 
     [HttpPatch("cancel/{id:guid}")]

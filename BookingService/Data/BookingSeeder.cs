@@ -18,8 +18,7 @@ public static class BookingSeeder
                 NumberOfSeats = 2,
                 BookingDate = DateTime.SpecifyKind(DateTime.Parse("2025-02-15 14:30:00"), DateTimeKind.Utc),
                 TotalPrice = 299.98M,
-                BookingStatus = BookingStatus.Confirmed,
-                PaymentStatus = PaymentStatus.Paid
+                BookingStatus = BookingStatus.Confirmed
             },
             new Booking
             {
@@ -31,8 +30,7 @@ public static class BookingSeeder
                 NumberOfSeats = 1,
                 BookingDate = DateTime.SpecifyKind(DateTime.Parse("2025-02-17 09:15:00"), DateTimeKind.Utc),
                 TotalPrice = 179.99M,
-                BookingStatus = BookingStatus.Confirmed,
-                PaymentStatus = PaymentStatus.Paid
+                BookingStatus = BookingStatus.Confirmed
             },
             new Booking
             {
@@ -44,8 +42,7 @@ public static class BookingSeeder
                 NumberOfSeats = 3,
                 BookingDate = DateTime.SpecifyKind(DateTime.Parse("2025-02-18 16:45:00"), DateTimeKind.Utc),
                 TotalPrice = 361.50M,
-                BookingStatus = BookingStatus.Pending,
-                PaymentStatus = PaymentStatus.Pending
+                BookingStatus = BookingStatus.Pending
             },
             new Booking
             {
@@ -57,8 +54,7 @@ public static class BookingSeeder
                 NumberOfSeats = 1,
                 BookingDate = DateTime.SpecifyKind(DateTime.Parse("2025-02-20 11:30:00"), DateTimeKind.Utc),
                 TotalPrice = 149.99M,
-                BookingStatus = BookingStatus.Cancelled,
-                PaymentStatus = PaymentStatus.Refunded
+                BookingStatus = BookingStatus.Cancelled
             },
             new Booking
             {
@@ -70,8 +66,7 @@ public static class BookingSeeder
                 NumberOfSeats = 2,
                 BookingDate = DateTime.SpecifyKind(DateTime.Parse("2025-02-21 08:00:00"), DateTimeKind.Utc),
                 TotalPrice = 359.98M,
-                BookingStatus = BookingStatus.Pending,
-                PaymentStatus = PaymentStatus.Pending
+                BookingStatus = BookingStatus.Pending
             }
         );
     }

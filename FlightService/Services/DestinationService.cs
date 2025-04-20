@@ -1,10 +1,8 @@
 using FlightService.Configuration;
 using FlightService.Mappers;
 using FlightService.Models;
-using Mapster;
 using Microsoft.Extensions.Options;
 using Refit;
-using Shared.DTOs;
 using Shared.DTOs.Activities;
 using Shared.DTOs.PointsOfInterest;
 
@@ -49,7 +47,7 @@ public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClie
             
             _logger.LogInformation("Received points of interest for location {Latitude}, {Longitude}", queryParams.Latitude, queryParams.Longitude);
 
-            return response.PointsOfInterest.Adapt<List<PointOfInterest>>();
+            return response.PointsOfInterest.Select(p => p.ToModel()).ToList();
         }
         
         catch (ApiException ex)

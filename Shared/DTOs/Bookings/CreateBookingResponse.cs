@@ -24,6 +24,4 @@ public class CreateBookingResponse
     public required decimal TotalPrice { get; set; }
 
     public required string BookingStatus { get; set; }
-    
-    public required string PaymentStatus { get; set; }
 }

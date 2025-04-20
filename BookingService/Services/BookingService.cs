@@ -1,11 +1,11 @@
 using BookingService.Data;
-using BookingService.Events;
 using BookingService.Mappers;
 using BookingService.Models;
 using BookingService.Validators;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.Bookings;
 using Shared.DTOs.Flights;
+using Shared.Messaging.Models.Booking;
 using Shared.Messaging.Services;
 
 namespace BookingService.Services;
@@ -67,6 +67,20 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         _context.Bookings.Add(createdBooking);
         
         await _context.SaveChangesAsync();
+
+        try
+        {
+            const string queueName = "booking-created";
+            
+            var payload = new BookingCreatedEvent { BookingId = booking.Id };
+            
+            await _messageService.PublishMessageAsync(queueName, payload);
+        }
+        
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to publish booking created message for booking {BookingId}", booking.Id);
+        }
         
         _logger.LogInformation("Booking {BookingId} created", createdBooking.Id);
 
@@ -80,7 +94,6 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         booking.FlightNumber = flight.FlightNumber;
         booking.BookingReference = GenerateBookingReference();
         booking.BookingStatus = BookingStatus.Pending;
-        booking.PaymentStatus = PaymentStatus.Pending;
         booking.TotalPrice = flight.Price * booking.NumberOfSeats;
         booking.BookingDate = DateTime.UtcNow;
         
@@ -160,8 +173,6 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         
         booking!.BookingStatus = BookingStatus.Cancelled;
         await _context.SaveChangesAsync();
-        
-        //this needs to trigger a message to the payment service to return the money
 
         try
         {
@@ -173,6 +184,20 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
                 FlightId = booking.FlightId,
                 NumberOfSeats = booking.NumberOfSeats
             };
+            
+            await _messageService.PublishMessageAsync(queueName, payload);
+        }
+        
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to publish booking cancelled message for booking {BookingId}", booking.Id);
+        }
+
+        try
+        {
+            const string queueName = "booking-cancelled-refund-payment";
+            
+            var payload = new RefundPaymentCommand { BookingId = booking.Id };
             
             await _messageService.PublishMessageAsync(queueName, payload);
         }

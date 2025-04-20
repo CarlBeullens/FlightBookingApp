@@ -17,9 +17,9 @@ public class FlightDetailsResponse
     
     public string ArrivalLocationCode { get; set; } = string.Empty;
     
-    public required DateTime DepartureTime { get; set; }
+    public required TimeOnly DepartureTime { get; set; }
     
-    public required DateTime ArrivalTime { get; set; }
+    public required TimeOnly ArrivalTime { get; set; }
     
     public required int AvailableSeats { get; set; }
     

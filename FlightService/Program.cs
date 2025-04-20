@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Refit;
 using Shared.Messaging;
-using Shared.Messaging.Models;
-using Shared.Messaging.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +19,9 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
+        Title = "Flight Service API",
         Version = "v1",
-        Title = "Flight Service API"
+
     });
 });
 

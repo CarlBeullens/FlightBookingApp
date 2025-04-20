@@ -1,7 +1,7 @@
 using FlightService.Models;
-using Shared.DTOs;
 using Shared.DTOs.Activities;
 using Shared.DTOs.Locations;
+using Shared.DTOs.PointsOfInterest;
 
 namespace FlightService.Mappers;
 
@@ -30,6 +30,19 @@ public static class DestinationMapper
             Latitude = dto.GeoCode.Latitude,
             Longitude = dto.GeoCode.Longitude,
             TimeZoneOffset = dto.TimeZoneOffset
+        };
+    }
+    
+    public static PointOfInterest ToModel(this PointOfInterestDto dto)
+    {
+        return new PointOfInterest
+        {
+            Name = dto.Name,
+            Category = dto.Category,
+            Rank = dto.Rank,
+            Longitude = dto.Longitude,
+            Latitude = dto.Latitude,
+            Tags = dto.Tags
         };
     }
 }

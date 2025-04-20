@@ -14,6 +14,14 @@
     build:
       context: .
       dockerfile: FlightService/Dockerfile
+      
+  payment-service:
+    image: paymentservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: PaymentService/Dockerfile
   
   booking-service-db:
     image: mcr.microsoft.com/azure-sql-edge:latest
@@ -26,7 +34,6 @@
       - "1433:1433"
     volumes:
       - booking-service-db-data-local:/var/opt/mssql
-    user: "0:0"  # Run as root user to avoid permission issues
   
   flight-service-db:
     image: mcr.microsoft.com/azure-sql-edge:latest
@@ -39,7 +46,18 @@
       - "1434:1433"
     volumes:
       - flight-service-db-data-local:/var/opt/mssql
-    user: "0:0"  # Run as root user to avoid permission issues
+        
+  payment-service-db:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=StrongPass123!
+      - MSSQL_PID=Developer
+      - MSSQL_AGENT_ENABLED=true
+    ports:
+      - "1435:1433"
+    volumes:
+      - payment-service-db-data-local:/var/opt/mssql
     
   redis:
     image: redis/redis-stack:latest
@@ -52,4 +70,5 @@
 volumes:
   booking-service-db-data-local:
   flight-service-db-data-local:
+  payment-service-db-data-local:
   redis-data:

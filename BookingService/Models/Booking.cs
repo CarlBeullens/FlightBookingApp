@@ -22,7 +22,5 @@ public class Booking
 
     public string BookingStatus { get; set; } = Models.BookingStatus.None;
     
-    public string PaymentStatus { get; set; } = Models.PaymentStatus.None;
-    
     public ICollection<Passenger> Passengers { get; set; } = new List<Passenger>();
 }

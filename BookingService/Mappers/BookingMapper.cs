@@ -33,8 +33,7 @@ public static class BookingMapper
             NumberOfSeats = booking.NumberOfSeats,
             BookingDate = booking.BookingDate,
             TotalPrice = booking.TotalPrice,
-            BookingStatus = booking.BookingStatus,
-            PaymentStatus = booking.PaymentStatus
+            BookingStatus = booking.BookingStatus
         };
     }
 
