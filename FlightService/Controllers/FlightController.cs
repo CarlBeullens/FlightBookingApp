@@ -2,22 +2,26 @@ using FlightService.Mappers;
 using FlightService.Models;
 using Microsoft.AspNetCore.Mvc;
 using FlightService.Services;
+using Microsoft.AspNetCore.Authorization;
 using Shared.DTOs.Flights;
 
 namespace FlightService.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class FlightController(IFlightService service) : ControllerBase
 {
     private readonly IFlightService _service = service;
 
+    [AllowAnonymous]
     [HttpGet("isAlive")]
     public ActionResult<string> IsAlive()
     {
         return Ok("Flight Service is alive!");
     }
     
+    [AllowAnonymous]
     [HttpGet("search")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

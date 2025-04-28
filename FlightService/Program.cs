@@ -3,9 +3,9 @@ using FlightService.Data;
 using FlightService.EventHandlers;
 using FlightService.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Refit;
 using Shared.Messaging;
+using Shared.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,15 +15,7 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Flight Service API",
-        Version = "v1",
-
-    });
-});
+builder.Services.AddSwagger(title: "Flight Service API");
 
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("LocalFlightServiceDb")
@@ -69,8 +61,11 @@ builder.Services.AddScoped<IDestinationService, DestinationService>();
 builder.Services.AddHostedService<BookingConfirmedHandler>();
 builder.Services.AddHostedService<BookingCancelledHandler>();
 
-builder.Services.Configure<AmadeusOptions>(
-    builder.Configuration.GetSection(AmadeusOptions.Token));
+builder.Services.Configure<AmadeusSettings>(
+    builder.Configuration.GetSection(AmadeusSettings.Token));
+
+builder.AddJwtAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -100,5 +95,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

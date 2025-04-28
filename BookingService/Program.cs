@@ -3,7 +3,7 @@ using BookingService.EventHandlers;
 using BookingService.Extensions;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Shared.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,20 +13,16 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Booking Service API",
-        Version = "v1"
-    });
-});
+builder.Services.AddSwagger(title: "Booking Service API");
 
 builder.AddInfrastructure();
 
 builder.Services.AddScoped<IBookingService, BookingService.Services.BookingService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddHostedService<FlightCancelledHandler>();
+
+builder.AddJwtAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

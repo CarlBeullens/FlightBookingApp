@@ -1,6 +1,6 @@
 namespace FlightService.Configuration;
 
-public class AmadeusOptions
+public class AmadeusSettings
 {
     public const string Token = "AmadeusToken";
     

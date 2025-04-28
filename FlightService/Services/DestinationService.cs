@@ -8,11 +8,11 @@ using Shared.DTOs.PointsOfInterest;
 
 namespace FlightService.Services;
 
-public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClient authApiClient, IOptions<AmadeusOptions> settings, ILogger<DestinationService> logger) : IDestinationService
+public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClient authApiClient, IOptions<AmadeusSettings> settings, ILogger<DestinationService> logger) : IDestinationService
 {
     private readonly IAmadeusApiClient _apiClient = apiClient;
     private readonly IAmadeusAuthApiClient _authApiClient = authApiClient;
-    private readonly AmadeusOptions _options = settings.Value;
+    private readonly AmadeusSettings _settings = settings.Value;
     private readonly ILogger<DestinationService> _logger = logger;
     private string _accessToken = string.Empty;
     private DateTime _tokenExpiration = new DateTime();
@@ -87,9 +87,9 @@ public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClie
         {
             var request = new Dictionary<string, string>()
             {
-                {"grant_type", _options.GrantType},
-                {"client_id", _options.ClientId},
-                {"client_secret", _options.ClientSecret}
+                {"grant_type", _settings.GrantType},
+                {"client_id", _settings.ClientId},
+                {"client_secret", _settings.ClientSecret}
             };
         
             var response = await _authApiClient.GetTokenAsync(request);

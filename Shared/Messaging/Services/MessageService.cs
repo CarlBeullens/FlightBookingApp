@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Logging;
-using Shared.Messaging.Models;
 
 namespace Shared.Messaging.Services;
 
