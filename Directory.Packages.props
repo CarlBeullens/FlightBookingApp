@@ -1,0 +1,25 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageVersion Include="Azure.Identity" Version="1.13.2" />
+        <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.19.0" />
+        <PackageVersion Include="FluentValidation" Version="11.11.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.15" />
+        <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.15" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.15">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageVersion>
+        <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.11.0" />
+        <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.15" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+        <PackageVersion Include="Refit" Version="8.0.0" />
+        <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
+        <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+    </ItemGroup>
+</Project>

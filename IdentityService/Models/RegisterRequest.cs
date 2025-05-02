@@ -1,6 +1,6 @@
 namespace IdentityService.Models;
 
-public class ExtendedRegisterRequest
+public class RegisterRequest
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }

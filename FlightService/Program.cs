@@ -3,6 +3,7 @@ using FlightService.Data;
 using FlightService.EventHandlers;
 using FlightService.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Refit;
 using Shared.Messaging;
 using Shared.Security;
@@ -15,7 +16,8 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger(title: "Flight Service API");
+
+builder.Services.AddSwagger("Flight Service API", "v1");
 
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("LocalFlightServiceDb")
@@ -64,9 +66,6 @@ builder.Services.AddHostedService<BookingCancelledHandler>();
 builder.Services.Configure<AmadeusSettings>(
     builder.Configuration.GetSection(AmadeusSettings.Token));
 
-builder.AddJwtAuthentication();
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -95,8 +94,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.Run();

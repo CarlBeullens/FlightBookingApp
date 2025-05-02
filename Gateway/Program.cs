@@ -1,7 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ApiGateway"));
+builder.Services.AddAuthentication().AddBearerToken();
+builder.Services.AddAuthorization();
+
+builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ApiGateway"));
 
 var app = builder.Build();
 
@@ -10,6 +12,9 @@ app.MapGet("/", async (HttpContext context) => {
     var content = await File.ReadAllTextAsync(filePath);
     await context.Response.WriteAsync(content);
 });
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapReverseProxy();
 
