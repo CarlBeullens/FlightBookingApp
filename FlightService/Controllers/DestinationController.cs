@@ -1,9 +1,9 @@
 using FlightService.Models;
 using FlightService.Services;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs;
-using Shared.DTOs.Activities;
-using Shared.DTOs.PointsOfInterest;
+using SharedService.DTOs;
+using SharedService.DTOs.Activities;
+using SharedService.DTOs.PointsOfInterest;
 
 namespace FlightService.Controllers;
 

@@ -1,7 +1,7 @@
 using FlightService.Models;
-using Shared.DTOs;
-using Shared.DTOs.Activities;
-using Shared.DTOs.PointsOfInterest;
+using SharedService.DTOs;
+using SharedService.DTOs.Activities;
+using SharedService.DTOs.PointsOfInterest;
 
 namespace FlightService.Services;
 

@@ -1,6 +1,6 @@
 using FlightService.Models;
-using Shared.DTOs;
-using Shared.DTOs.Flights;
+using SharedService.DTOs;
+using SharedService.DTOs.Flights;
 
 namespace FlightService.Services;
 

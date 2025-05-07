@@ -1,5 +1,5 @@
 using FlightService.Models;
-using Shared.DTOs.Flights;
+using SharedService.DTOs.Flights;
 
 namespace FlightService.Mappers;
 

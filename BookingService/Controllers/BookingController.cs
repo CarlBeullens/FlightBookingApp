@@ -4,8 +4,8 @@ using BookingService.Models;
 using BookingService.Services;
 using BookingService.Validators;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Bookings;
-using Shared.DTOs.Flights;
+using SharedService.DTOs.Bookings;
+using SharedService.DTOs.Flights;
 
 namespace BookingService.Controllers;
 
@@ -108,7 +108,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         {
             var errorMessage = validationResult.Errors.First().ErrorMessage ?? "validation error";
             
-            _logger.LogError("Validation failed: {detail}", errorMessage);
+            _logger.LogError("Validation failed: {ErrorMessage}", errorMessage);
             
             return this.ValidationErrorProblem(errorMessage);
         }
@@ -117,11 +117,9 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
 
         if (createdBooking == null)
         {
-            var errorMessage = "Failed to create booking";
+            _logger.LogError("Failed to create booking");
             
-            _logger.LogError(errorMessage);
-            
-            return this.ServerErrorProblem(errorMessage);
+            return this.ServerErrorProblem("Failed to create booking");
         }
 
         var response = createdBooking.ToResponse();

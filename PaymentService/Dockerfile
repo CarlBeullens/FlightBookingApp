@@ -7,9 +7,20 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copy project files
 COPY ["PaymentService/PaymentService.csproj", "PaymentService/"]
+COPY ["SharedService/SharedService.csproj", "SharedService/"]
+
+# Copy central package management files
+COPY ["Directory.Packages.props", "./"]
+
+# Restore the project
 RUN dotnet restore "PaymentService/PaymentService.csproj"
+
+# Copy everything else
 COPY . .
+
 WORKDIR "/src/PaymentService"
 RUN dotnet build "PaymentService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

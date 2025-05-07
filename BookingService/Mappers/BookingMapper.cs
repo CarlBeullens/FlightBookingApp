@@ -1,6 +1,6 @@
 using BookingService.Models;
-using Shared.DTOs.Bookings;
-using Shared.DTOs.Passengers;
+using SharedService.DTOs.Bookings;
+using SharedService.DTOs.Passengers;
 
 namespace BookingService.Mappers;
 

@@ -3,7 +3,7 @@ using BookingService.EventHandlers;
 using BookingService.Extensions;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
-using Shared.Security;
+using SharedService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,4 +51,4 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

@@ -1,6 +1,6 @@
 using BookingService.Models;
 using Refit;
-using Shared.DTOs.Flights;
+using SharedService.DTOs.Flights;
 
 namespace BookingService.Services;
 

@@ -2,10 +2,10 @@ using FlightService.Data;
 using FlightService.Models;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs;
-using Shared.DTOs.Flights;
-using Shared.Messaging.Models.Flight;
-using Shared.Messaging.Services;
+using SharedService.DTOs;
+using SharedService.DTOs.Flights;
+using SharedService.Messaging.Models.Flight;
+using SharedService.Messaging.Services;
 
 namespace FlightService.Services;
 
@@ -78,7 +78,7 @@ public class FlightService(FlightServiceDbContext context, IMessageService messa
 
         if (flight == null)
         {
-            _logger.LogInformation("flight {id} not found", id);
+            _logger.LogInformation("flight {Id} not found", id);
             
             var validationResult = new ValidationResult
             {
@@ -108,7 +108,7 @@ public class FlightService(FlightServiceDbContext context, IMessageService messa
             
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while publishing flight cancelled event for flight {id}", id);
+            _logger.LogError(ex, "Error while publishing flight cancelled event for flight {Id}", id);
         }
 
         return Result<Flight>.Success(flight);
@@ -149,7 +149,7 @@ public class FlightService(FlightServiceDbContext context, IMessageService messa
 
         if (!hasCapacity)
         {
-            _logger.LogInformation("Not enough seats available on flight {id}", id);
+            _logger.LogInformation("Not enough seats available on flight {Id}", id);
             
             var result = new ValidationResult
             {

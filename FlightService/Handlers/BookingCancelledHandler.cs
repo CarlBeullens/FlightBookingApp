@@ -1,7 +1,7 @@
 using FlightService.Services;
-using Shared.Messaging.Models;
-using Shared.Messaging.Models.Booking;
-using Shared.Messaging.Services;
+using SharedService.Messaging.Models;
+using SharedService.Messaging.Models.Booking;
+using SharedService.Messaging.Services;
 
 namespace FlightService.EventHandlers;
 

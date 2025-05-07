@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Shared.Security;
+using SharedService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,7 +67,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        app.Logger.LogInformation($"Using connection string: {connectionString}");
+        app.Logger.LogInformation("Using connection string: {ConnectionString}", connectionString);
         var context = services.GetRequiredService<ApplicationDbContext>();
         await context.Database.MigrateAsync();
         app.Logger.LogInformation("Database migrated successfully or already up to date");
@@ -78,4 +78,4 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.Run();
+await app.RunAsync();

@@ -3,10 +3,9 @@ using FlightService.Data;
 using FlightService.EventHandlers;
 using FlightService.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Refit;
-using Shared.Messaging;
-using Shared.Security;
+using SharedService.Messaging;
+using SharedService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,7 +73,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<FlightServiceDbContext>();
-        app.Logger.LogInformation("Using connection string: {connectionString}", connectionString);
+        app.Logger.LogInformation("Using connection string: {ConnectionString}", connectionString);
         await context.Database.MigrateAsync();
         app.Logger.LogInformation("Database migrated successfully or already up to date");
     }
@@ -95,4 +94,4 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

@@ -1,6 +1,7 @@
+using System.Globalization;
 using BookingService.Services;
-using Shared.Messaging.Models.Flight;
-using Shared.Messaging.Services;
+using SharedService.Messaging.Models.Flight;
+using SharedService.Messaging.Services;
 
 namespace BookingService.EventHandlers;
 

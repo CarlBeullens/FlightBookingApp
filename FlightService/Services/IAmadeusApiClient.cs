@@ -1,7 +1,7 @@
 using Refit;
-using Shared.DTOs.Activities;
-using Shared.DTOs.Locations;
-using Shared.DTOs.PointsOfInterest;
+using SharedService.DTOs.Activities;
+using SharedService.DTOs.Locations;
+using SharedService.DTOs.PointsOfInterest;
 
 namespace FlightService.Services;
 

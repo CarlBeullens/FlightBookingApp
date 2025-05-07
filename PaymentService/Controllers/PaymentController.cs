@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Services;
-using Shared.DTOs.Payments;
-using Shared.Enums;
+using SharedService.DTOs.Payments;
+using SharedService.Enums;
 
 namespace PaymentService.Controllers;
 
@@ -50,7 +50,7 @@ public class PaymentController(IPaymentService service) : ControllerBase
     [HttpPut("status")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PaymentDto>> SetPaymentStatus([FromQuery] Guid bookingId, [FromQuery] PaymentStatusEnum status)
+    public async Task<ActionResult<PaymentDto>> SetPaymentStatus([FromQuery] Guid bookingId, [FromQuery] PaymentStatus status)
     {
         var payment = await _service.SetPaymentStatus(bookingId, status.ToString());
 

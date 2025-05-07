@@ -3,7 +3,7 @@ using FlightService.Models;
 using Microsoft.AspNetCore.Mvc;
 using FlightService.Services;
 using Microsoft.AspNetCore.Authorization;
-using Shared.DTOs.Flights;
+using SharedService.DTOs.Flights;
 
 namespace FlightService.Controllers;
 

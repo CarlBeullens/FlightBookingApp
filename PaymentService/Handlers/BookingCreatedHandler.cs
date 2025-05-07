@@ -1,6 +1,6 @@
 using PaymentService.Services;
-using Shared.Messaging.Models.Booking;
-using Shared.Messaging.Services;
+using SharedService.Messaging.Models.Booking;
+using SharedService.Messaging.Services;
 
 namespace PaymentService.Handlers;
 

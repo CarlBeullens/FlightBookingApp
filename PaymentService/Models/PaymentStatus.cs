@@ -1,6 +1,6 @@
 namespace PaymentService.Models;
 
-public class PaymentStatus
+public static class PaymentStatus
 {
     public const string None = "None";
     public const string Pending = "Pending";

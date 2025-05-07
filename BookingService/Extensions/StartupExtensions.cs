@@ -2,7 +2,7 @@ using BookingService.Data;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
 using Refit;
-using Shared.Messaging;
+using SharedService.Messaging;
 
 namespace BookingService.Extensions;
 

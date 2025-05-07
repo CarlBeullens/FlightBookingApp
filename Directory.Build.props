@@ -1,0 +1,29 @@
+<Project>
+    <PropertyGroup>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <AnalysisMode>Recommended</AnalysisMode>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+
+        <!-- Warning Suppressions with Justifications:
+             CA1000: Static members on generic types used for factory methods
+             CA1305: Culture-agnostic operations don't require IFormatProvider
+             CA1309: Culture-aware comparisons needed for localization
+             CA1848: Simple logging doesn't warrant LoggerMessage complexity
+             CA1861: Inline arrays preferred for readability
+             S125: Commented code maintained during active development
+             S2139: Exception context provided through structured logging
+             S6608: LINQ methods preferred for consistency and readability
+        -->
+        <NoWarn>$(NoWarn);CA1000;CA1305;CA1309;CA1848;CA1861;S125;S2139;S6608</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SonarAnalyzer.CSharp">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>

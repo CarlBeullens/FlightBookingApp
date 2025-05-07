@@ -1,8 +1,8 @@
 using BookingService.Models;
 using FluentValidation;
 using FluentValidation.Results;
-using Shared.DTOs.Bookings;
-using Shared.DTOs.Passengers;
+using SharedService.DTOs.Bookings;
+using SharedService.DTOs.Passengers;
 
 namespace BookingService.Validators;
 

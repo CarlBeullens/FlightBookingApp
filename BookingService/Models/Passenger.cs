@@ -12,7 +12,7 @@ public class Passenger
     
     public string LastName { get; set; } = string.Empty;
     
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
     
     public string PassportNumber { get; set; } = string.Empty;
     

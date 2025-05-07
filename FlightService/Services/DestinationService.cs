@@ -3,8 +3,8 @@ using FlightService.Mappers;
 using FlightService.Models;
 using Microsoft.Extensions.Options;
 using Refit;
-using Shared.DTOs.Activities;
-using Shared.DTOs.PointsOfInterest;
+using SharedService.DTOs.Activities;
+using SharedService.DTOs.PointsOfInterest;
 
 namespace FlightService.Services;
 
@@ -15,7 +15,7 @@ public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClie
     private readonly AmadeusSettings _settings = settings.Value;
     private readonly ILogger<DestinationService> _logger = logger;
     private string _accessToken = string.Empty;
-    private DateTime _tokenExpiration = new DateTime();
+    private DateTime _tokenExpiration;
     
     public async Task<Location> GetLocationDetailsByCodeAsync(string locationCode)
     {
@@ -32,7 +32,7 @@ public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClie
         
         catch (ApiException ex)
         {
-            _logger.LogError("API error: {StatusCode} - {ReasonPhrase}", ex.StatusCode, ex.ReasonPhrase);
+            _logger.LogError(ex, "API error: {StatusCode} - {ReasonPhrase}", ex.StatusCode, ex.ReasonPhrase);
             throw;
         }
     }
@@ -52,8 +52,8 @@ public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClie
         
         catch (ApiException ex)
         {
-            _logger.LogError("Request failed: {Url}", ex.RequestMessage.RequestUri);
-            _logger.LogError("API error: {StatusCode} - {ReasonPhrase}", ex.StatusCode, ex.ReasonPhrase);
+            _logger.LogError(ex, "Request failed: {Url}", ex.RequestMessage.RequestUri);
+            _logger.LogError(ex, "API error: {StatusCode} - {ReasonPhrase}", ex.StatusCode, ex.ReasonPhrase);
             throw;
         }
     }
@@ -73,8 +73,8 @@ public class DestinationService(IAmadeusApiClient apiClient, IAmadeusAuthApiClie
         
         catch (ApiException ex)
         {
-            _logger.LogError("Request failed: {Url}", ex.RequestMessage.RequestUri);
-            _logger.LogError("API error: {StatusCode} - {ReasonPhrase}", ex.StatusCode, ex.ReasonPhrase);
+            _logger.LogError(ex, "Request failed: {Url}", ex.RequestMessage.RequestUri);
+            _logger.LogError(ex, "API error: {StatusCode} - {ReasonPhrase}", ex.StatusCode, ex.ReasonPhrase);
             throw;
         }
     }

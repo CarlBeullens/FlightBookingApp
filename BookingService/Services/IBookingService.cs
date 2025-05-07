@@ -1,6 +1,6 @@
 using BookingService.Models;
-using Shared.DTOs.Bookings;
-using Shared.DTOs.Flights;
+using SharedService.DTOs.Bookings;
+using SharedService.DTOs.Flights;
 
 namespace BookingService.Services;
 

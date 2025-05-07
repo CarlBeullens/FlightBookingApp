@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using PaymentService.Data;
 using PaymentService.Handlers;
 using PaymentService.Services;
-using Shared.Messaging;
-using Shared.Security;
+using SharedService.Messaging;
+using SharedService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +53,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        app.Logger.LogInformation($"Using connection string: {connectionString}");
+        app.Logger.LogInformation("Using connection string: {ConnectionString}", connectionString);
         var context = services.GetRequiredService<PaymentDbContext>();
         await context.Database.MigrateAsync();
         app.Logger.LogInformation("Database migrated successfully or already up to date");
@@ -74,4 +74,4 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

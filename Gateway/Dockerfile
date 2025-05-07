@@ -7,9 +7,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copy project file
 COPY ["Gateway/Gateway.csproj", "Gateway/"]
+
+# Copy central package management files
+COPY ["Directory.Packages.props", "./"]
+
+# Restore the project
 RUN dotnet restore "Gateway/Gateway.csproj"
-COPY . .
+
+# # Copy everything else
+COPY ["Gateway/", "Gateway/"]
+
 WORKDIR "/src/Gateway"
 RUN dotnet build "Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

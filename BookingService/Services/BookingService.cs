@@ -3,10 +3,10 @@ using BookingService.Mappers;
 using BookingService.Models;
 using BookingService.Validators;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs.Bookings;
-using Shared.DTOs.Flights;
-using Shared.Messaging.Models.Booking;
-using Shared.Messaging.Services;
+using SharedService.DTOs.Bookings;
+using SharedService.DTOs.Flights;
+using SharedService.Messaging.Models.Booking;
+using SharedService.Messaging.Services;
 
 namespace BookingService.Services;
 
@@ -87,7 +87,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         return booking;
     }
     
-    private Booking CreateBooking(Booking booking, FlightDetailsResponse flight)
+    private static Booking CreateBooking(Booking booking, FlightDetailsResponse flight)
     {
         booking.Id = Guid.NewGuid();
         booking.FlightId = flight.Id;
@@ -100,7 +100,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         return booking;
     }
 
-    private string GenerateBookingReference()
+    private static string GenerateBookingReference()
     {
         const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     
@@ -125,7 +125,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         
         if (!result.IsValid)
         {
-            result.Errors.ForEach(e => _logger.LogError("{errorMessage}", e.ErrorMessage));
+            result.Errors.ForEach(e => _logger.LogError("{ErrorMessage}", e.ErrorMessage));
 
             return Result<Booking>.Failure(result);
         }
@@ -166,7 +166,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
 
         if (!result.IsValid)
         {
-            result.Errors.ForEach(e => _logger.LogError("{errorMessage}", e.ErrorMessage));
+            result.Errors.ForEach(e => _logger.LogError("{ErrorMessage}", e.ErrorMessage));
 
             return Result<Booking>.Failure(result);
         }
