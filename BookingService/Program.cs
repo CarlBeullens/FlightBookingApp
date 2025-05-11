@@ -21,9 +21,6 @@ builder.Services.AddScoped<IBookingService, BookingService.Services.BookingServi
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddHostedService<FlightCancelledHandler>();
 
-builder.AddJwtAuthentication();
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -50,5 +47,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
+
+app.UseApiKeyAuthentication();
 
 await app.RunAsync();

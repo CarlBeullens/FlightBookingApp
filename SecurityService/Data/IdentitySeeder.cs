@@ -1,8 +1,8 @@
-using IdentityService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SecurityService.Models;
 
-namespace IdentityService.Data;
+namespace SecurityService.Data;
 
 public static class IdentitySeeder
 {

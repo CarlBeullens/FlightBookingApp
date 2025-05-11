@@ -7,7 +7,6 @@ using SharedService.DTOs.Flights;
 
 namespace FlightService.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class FlightController(IFlightService service) : ControllerBase

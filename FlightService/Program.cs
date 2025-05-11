@@ -94,4 +94,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 
+app.UseApiKeyAuthentication();
+
 await app.RunAsync();

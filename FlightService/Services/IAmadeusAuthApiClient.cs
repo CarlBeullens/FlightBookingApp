@@ -1,6 +1,6 @@
 using Refit;
 using SharedService.DTOs;
-using SharedService.DTOs.Authorization;
+using SharedService.DTOs.Auth;
 
 namespace FlightService.Services;
 

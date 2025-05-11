@@ -21,6 +21,7 @@
         <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
         <PackageVersion Include="Refit" Version="8.0.0" />
         <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
+        <PackageVersion Include="Scalar.AspNetCore" Version="2.2.7" />
         <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.9.0.115408">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

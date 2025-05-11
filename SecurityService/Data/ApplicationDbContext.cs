@@ -1,8 +1,8 @@
-using IdentityService.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using SecurityService.Models;
 
-namespace IdentityService.Data;
+namespace SecurityService.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {

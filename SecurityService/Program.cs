@@ -1,12 +1,9 @@
-using System.Text;
-using IdentityService.Data;
-using IdentityService.Extensions;
-using IdentityService.Models;
-using IdentityService.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SecurityService.Data;
+using SecurityService.Extensions;
+using SecurityService.Models;
+using SecurityService.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using SharedService.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +13,10 @@ builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddConsole();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger(title: "Identity Service API");
+builder.Services.AddSwagger(title: "Security Service API");
 
 var connectionString = builder.Environment.IsDevelopment()
-    ? builder.Configuration.GetConnectionString("LocalIdentityServiceDb")
+    ? builder.Configuration.GetConnectionString("LocalSecurityServiceDb")
     : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,20 +31,28 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     });
 });
 
-builder.Services.AddJwtAuthentication(builder.Configuration);
-
-builder.Services.AddAuthorization();
-
-// builder.Services.AddAuthorizationBuilder()
-//     .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
-//     .AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
-
 builder.Services
-    .AddIdentityApiEndpoints<ApplicationUser>()
-    .AddRoles<IdentityRole>()
+    .AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 1;
+    
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+    
+    options.User.RequireUniqueEmail = true;
+});
+
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -60,7 +65,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.AddIdentityEndPoints();
+app.AddAuthEndPoints();
 
 using (var scope = app.Services.CreateScope())
 {

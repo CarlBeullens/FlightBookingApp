@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SharedService.DTOs.Authorization;
+namespace SharedService.DTOs.Auth;
 
 /// <summary>
 /// Response model for the Amadeus OAuth token endpoint
