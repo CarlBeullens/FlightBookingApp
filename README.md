@@ -5,31 +5,37 @@
 
 > **Note:** This project is currently under construction.
 
-A basic flight booking system built with .NET 8 using a microservice architecture.
+A distributed flight booking system built with .NET 8 using microservices architecture. 
+The system is designed to handle flight reservations, booking management, payments, and security through multiple interconnected services.
 
-## Project Overview
+## Architecture Overview
 
-This project aims to create a simple flight booking system with currently two main services:
+The system consists of the following microservices:
 
-- **Flight Service**: Manages flight information and availability
-- **Booking Service**: Handles user bookings
+- **Flight Service**: Manages flight information, availability, and seat inventory
+- **Booking Service**: Handles flight bookings, passenger information, and booking lifecycle
+- **Payment Service**: Processes payments and manages payment status
+- **Security Service**: Handles user authentication and authorization with JWT tokens
+- **Gateway**: API Gateway using YARP for routing and authentication
 
-Both services are containerized using Docker and communicate via REST APIs.
-
-## Current Status
-
-The project is in early development with the following components in progress:
-
-- Basic service structure and communication
-- Entity models for flights and bookings
-- Integration with external APIs
-- Docker configuration
-- CI/CD pipeline with GitHub Actions
+Services communicate via REST APIs and Azure Service Bus for asynchronous messaging.
 
 ## Tech Stack
 
-- .NET 8
-- Entity Framework Core
-- Docker
-- Azure Container Apps
-- Azure SQL Server
+- **Framework**: .NET 8
+- **Database**: Azure SQL Server (with Entity Framework Core)
+- **Messaging**: Azure Service Bus
+- **Caching**: Redis
+- **Authentication**: JWT Bearer Authentication
+- **API Gateway**: YARP (Yet Another Reverse Proxy)
+- **API Documentation**: Swagger/OpenAPI
+- **External APIs**: Amadeus API for travel data
+- **Containerization**: Docker
+- **CI/CD**: GitHub Actions
+- **Hosting**: Azure Container Apps
+
+## Architecture Patterns
+
+- **Microservices Architecture**: Independent services with clear boundaries
+- **Event-Driven Communication**: Asynchronous messaging between services
+- **API Gateway Pattern**: Centralized entry point for all services
