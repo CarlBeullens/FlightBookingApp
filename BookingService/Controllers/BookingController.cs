@@ -1,3 +1,4 @@
+using System.Globalization;
 using BookingService.Extensions;
 using BookingService.Mappers;
 using BookingService.Models;
@@ -16,13 +17,25 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
     private readonly IBookingService _service = service;
     private readonly ILogger<BookingController> _logger = logger;
     
-    [HttpGet("isAlive")]
+    [HttpGet("public/is-alive", Name = "IsAlive")]
     public ActionResult<string> IsAlive()
     {
         return Ok("Booking Service is alive!");
     }
+    
+    [HttpGet("private/is-admin", Name = "IsAdmin")]
+    public ActionResult<string> IsAdmin()
+    {
+        var cultureInfo = new CultureInfo("en-GB");
+        
+        return Ok(new
+        {
+            message = "Admin access confirmed",
+            serverTime = DateTime.Now.ToString(cultureInfo)
+        });
+    }
 
-    [HttpGet]
+    [HttpGet("protected/all-bookings", Name = "GetAllBookings")]
     [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<Booking>>> GetAllBookingsAsync()
     {
@@ -31,7 +44,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return Ok(bookings);
     }
     
-    [HttpGet("{id:guid}", Name="GetBookingById")]
+    [HttpGet("protected/{id:guid}", Name="GetBookingById")]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Booking>> GetBookingByIdAsync(Guid id)
@@ -48,7 +61,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
             : Ok(booking);
     }
     
-    [HttpGet("reference/{reference}")]
+    [HttpGet("protected/reference/{reference}", Name = "GetBookingByReference")]
     [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Booking>> GetBookingByReferenceAsync(string reference)
@@ -72,7 +85,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return Ok(booking);
     }
     
-    [HttpGet("email/{email}")]
+    [HttpGet("protected/email/{email}", Name = "GetBookingByEmail")]
     [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyCollection<Booking>>> GetBookingsByEmailAsync(string email)
@@ -96,7 +109,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return Ok(bookings);
     }
 
-    [HttpPost("create")]
+    [HttpPost("protected/create", Name = "CreateBooking")]
     [ProducesResponseType(typeof(CreateBookingResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -127,7 +140,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return CreatedAtRoute("GetBookingById", new { id = response.BookingId }, response);
     }
     
-    [HttpPatch("confirm/{id:guid}")]
+    [HttpPatch("protected/confirm/{id:guid}", Name = "ConfirmBooking")]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -138,7 +151,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return result.IsSuccess ? Ok(result.Data) : result.HandleValidationErrors(this);
     }
 
-    [HttpPatch("cancel/{id:guid}")]
+    [HttpPatch("protected/cancel/{id:guid}", Name = "CancelBooking")]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -149,7 +162,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         return result.IsSuccess ? Ok(result.Data) : result.HandleValidationErrors(this);
     }
     
-    [HttpGet("flights")]
+    [HttpGet("protected/flights/all", Name = "GetAllFlights")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
@@ -167,7 +180,7 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
         }
     }
     
-    [HttpGet("flights/{id:guid}")]
+    [HttpGet("protected/flights/{id:guid}", Name = "GetFlightDetailsById")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

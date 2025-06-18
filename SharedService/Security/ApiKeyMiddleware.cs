@@ -10,7 +10,8 @@ public class ApiKeyMiddleware(RequestDelegate next, IConfiguration config, ILogg
     
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Path.StartsWithSegments("/swagger"))
+        if (context.Request.Path.StartsWithSegments("/swagger") || 
+            context.Request.Path.StartsWithSegments("/health"))
         {
             await next(context);
 

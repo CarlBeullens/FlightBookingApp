@@ -10,15 +10,15 @@ namespace BookingService.Services;
 public interface IFlightClientService
 
 { 
-    [Get("/api/flight")]
+    [Get("/api/flight/protected/all-flights")]
     Task<IReadOnlyCollection<FlightDetailsResponse>> GetAllFlightDetailsAsync();
     
-    [Get("/api/flight/{id}")]
+    [Get("/api/flight/protected/{id}")]
     Task<FlightDetailsResponse?> GetFlightDetailsByIdAsync(Guid id);
     
-    [Get("/api/flight/{reference}")]
+    [Get("/api/flight/protected/{reference}")]
     Task<FlightDetailsResponse?> GetFlightDetailsByReferenceAsync(string reference);
 
-    [Patch("/api/flight/seats/{id}")]
+    [Patch("/api/flight/protected/seats/{id}")]
     Task<Result<bool>> UpdateAvailableSeatingAsync(Guid id, int seatsToReserve);
 }

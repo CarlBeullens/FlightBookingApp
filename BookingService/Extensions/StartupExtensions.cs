@@ -1,6 +1,7 @@
 using BookingService.Data;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Refit;
 using SharedService.Messaging;
 
@@ -10,13 +11,13 @@ public static class StartupExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
+        var connectionString = builder.Environment.IsDevelopment()
+            ? builder.Configuration.GetConnectionString("LocalBookingServiceDb")
+            : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+        
         // database
         builder.Services.AddDbContext<BookingDbContext>(options =>
         {
-            var connectionString = builder.Environment.IsDevelopment()
-                ? builder.Configuration.GetConnectionString("LocalBookingServiceDb")
-                : Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-            
             options.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
@@ -42,8 +43,11 @@ public static class StartupExtensions
         builder.Services.AddRefitClient<IFlightClientService>()
             .ConfigureHttpClient(client =>
             {
-                var uri = builder.Configuration["FlightService:BaseUrl"] ?? "http://localhost:5100/";
+                var uri = builder.Configuration.GetValue<string>("FlightService:BaseUrl") ?? "http://localhost:5100/";
+                var apiKey = builder.Configuration.GetValue<string>("FlightService:ApiKey");
+                
                 client.BaseAddress = new Uri(uri);
+                client.DefaultRequestHeaders.Add("X-API-Key", apiKey);
             });
         
         // messaging service bus
@@ -52,6 +56,11 @@ public static class StartupExtensions
             : Environment.GetEnvironmentVariable("AZURESERVICEBUS_CONNECTION_STRING");
 
         builder.Services.AddServiceBus(serviceBusConnectionString);
+        
+        // health checks
+        builder.Services.AddHealthChecks()
+            .AddCheck("booking-service", () => HealthCheckResult.Healthy())
+            .AddSqlServer(connectionString!, name: "booking-service-db");
         
         return builder;
     }

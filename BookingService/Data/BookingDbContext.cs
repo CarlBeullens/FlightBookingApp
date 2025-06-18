@@ -43,7 +43,7 @@ public class BookingDbContext(DbContextOptions<BookingDbContext> options) : DbCo
             .OnDelete(DeleteBehavior.Cascade);
         
         // Seeding
-        modelBuilder.SeedPasssengers();
+        modelBuilder.SeedPassengers();
         modelBuilder.SeedBookings();
     }
 }

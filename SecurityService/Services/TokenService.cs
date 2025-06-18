@@ -26,7 +26,7 @@ public class TokenService(UserManager<ApplicationUser> userManager, IConfigurati
         }
         
         // Create signing key
-        var secretKey = config.GetValue<string>("Jwt:SecretKey") 
+        var secretKey = config.GetValue<string>("JwtCreation:SecretKey") 
                                 ?? throw new InvalidOperationException("JWT SecretKey not configured");
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
@@ -34,11 +34,11 @@ public class TokenService(UserManager<ApplicationUser> userManager, IConfigurati
         var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
         // Create token
-        var expireTimeInMinutes = int.TryParse(config["Jwt:ExpireInMinutes"], out var minutes) ? minutes : 60;
+        var expireTimeInMinutes = int.TryParse(config["JwtCreation:ExpireInMinutes"], out var minutes) ? minutes : 60;
                 
         var tokenDescriptor = new JwtSecurityToken(
-            issuer: config.GetValue<string>("Jwt:Issuer"),
-            audience: config.GetValue<string>("Jwt:Audience"),
+            issuer: config.GetValue<string>("JwtCreation:Issuer"),
+            audience: config.GetValue<string>("JwtCreation:Audience"),
             claims: claims,
             expires: DateTime.Now.AddMinutes(expireTimeInMinutes),
             signingCredentials: signingCredentials);

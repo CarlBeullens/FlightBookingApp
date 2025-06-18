@@ -5,7 +5,7 @@ namespace BookingService.Data;
 
 public static class PassengerSeeder
 {
-    public static void SeedPasssengers(this ModelBuilder modelBuilder)
+    public static void SeedPassengers(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Passenger>().HasData(
             // Passengers for John Smith's booking

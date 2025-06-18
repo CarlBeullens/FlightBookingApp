@@ -1,8 +1,11 @@
 using FlightService.Configuration;
 using FlightService.Data;
-using FlightService.EventHandlers;
+using FlightService.Handlers;
 using FlightService.Services;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Refit;
 using SharedService.Messaging;
 using SharedService.Security;
@@ -65,6 +68,10 @@ builder.Services.AddHostedService<BookingCancelledHandler>();
 builder.Services.Configure<AmadeusSettings>(
     builder.Configuration.GetSection(AmadeusSettings.Token));
 
+builder.Services.AddHealthChecks()
+    .AddCheck("flight-service", () => HealthCheckResult.Healthy())
+    .AddSqlServer(connectionString!, name: "flight-service-db");
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -92,7 +99,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
 app.MapControllers();
+app.MapHealthChecks("api/flight/public/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseApiKeyAuthentication();
 

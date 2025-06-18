@@ -3,6 +3,8 @@
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
     <ItemGroup>
+        <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.2"/>
+        <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1"/>
         <PackageVersion Include="Azure.Identity" Version="1.13.2" />
         <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.19.0" />
         <PackageVersion Include="FluentValidation" Version="11.11.0" />

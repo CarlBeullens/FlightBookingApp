@@ -1,4 +1,7 @@
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using PaymentService.Data;
 using PaymentService.Handlers;
 using PaymentService.Services;
@@ -43,6 +46,10 @@ builder.Services.AddHostedService<RefundPaymentHandler>();
 
 builder.Services.AddScoped<IPaymentService, PaymentService.Services.PaymentService>();
 
+builder.Services.AddHealthChecks()
+    .AddCheck("payment-service", () => HealthCheckResult.Healthy())
+    .AddSqlServer(connectionString!, name: "payment-service-db");
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -61,7 +68,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()) 
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -69,7 +76,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
 app.MapControllers();
+app.MapHealthChecks("api/payment/public/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseApiKeyAuthentication();
 

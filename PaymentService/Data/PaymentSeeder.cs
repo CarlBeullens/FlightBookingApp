@@ -8,7 +8,7 @@ public static class PaymentSeeder
 {
     public static void SeedPayments(this ModelBuilder modelBuilder)
     {
-        var cultureInfo = new CultureInfo(Thread.CurrentThread.CurrentCulture.Name);
+        var cultureInfo = new CultureInfo("en-GB");
         
         modelBuilder.Entity<Payment>().HasData(
             new Payment

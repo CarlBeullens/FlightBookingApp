@@ -1,7 +1,9 @@
 using BookingService.Data;
-using BookingService.EventHandlers;
 using BookingService.Extensions;
+using BookingService.Handlers;
 using BookingService.Services;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using SharedService.Security;
 
@@ -46,7 +48,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
 app.MapControllers();
+app.MapHealthChecks("api/booking/public/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseApiKeyAuthentication();
 

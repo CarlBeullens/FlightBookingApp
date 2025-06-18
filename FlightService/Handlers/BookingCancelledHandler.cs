@@ -1,9 +1,8 @@
 using FlightService.Services;
-using SharedService.Messaging.Models;
 using SharedService.Messaging.Models.Booking;
 using SharedService.Messaging.Services;
 
-namespace FlightService.EventHandlers;
+namespace FlightService.Handlers;
 
 public class BookingCancelledHandler(IMessageService messageService, IServiceProvider serviceProvider) 
     : BaseMessageHandler<BookingCancelledEvent>(messageService, serviceProvider, QueueName)

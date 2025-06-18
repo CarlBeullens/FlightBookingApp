@@ -17,15 +17,15 @@ builder.Services
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]
+            ValidIssuer = builder.Configuration["JwtValidation:Issuer"],
+            ValidAudience = builder.Configuration["JwtValidation:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtValidation:SecretKey"]
                                 ?? throw new InvalidOperationException("JWT secret key not found")))
         };
     });
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"))
+    .AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer", "Admin"))
     .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
 
 var app = builder.Build();

@@ -13,15 +13,13 @@ public class FlightController(IFlightService service) : ControllerBase
 {
     private readonly IFlightService _service = service;
 
-    [AllowAnonymous]
-    [HttpGet("isAlive")]
+    [HttpGet("public/is-alive")]
     public ActionResult<string> IsAlive()
     {
         return Ok("Flight Service is alive!");
     }
     
-    [AllowAnonymous]
-    [HttpGet("search")]
+    [HttpGet("public/search")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> SearchFlightsAsync([FromQuery] FlightSearchRequest searchRequest)
@@ -43,7 +41,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(response);
     }
     
-    [HttpGet]
+    [HttpGet("protected/all-flights")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
     {
@@ -54,7 +52,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(response);
     }
     
-    [HttpGet("{id:guid}")]
+    [HttpGet("protected/{id:guid}")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(Guid id)
@@ -74,7 +72,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flight.ToDto());
     }
 
-    [HttpGet("{reference}")]
+    [HttpGet("protected/{reference}")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByReferenceAsync(string reference)
@@ -94,7 +92,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flight.ToDto());
     }
 
-    [HttpPatch("cancel/{id:guid}")]
+    [HttpPatch("protected/cancel/{id:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> CancelFlight(Guid id)
@@ -120,7 +118,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok($"Flight {id} cancelled successfully");
     }
 
-    [HttpPatch("seats/{id:guid}")]
+    [HttpPatch("protected/seats/{id:guid}")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
