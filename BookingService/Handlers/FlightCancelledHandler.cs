@@ -1,6 +1,6 @@
 using BookingService.Services;
-using SharedService.Messaging.Models.Flight;
-using SharedService.Messaging.Services;
+using SharedService.ServiceBus.EventMessages.Flight;
+using SharedService.ServiceBus.Services;
 
 namespace BookingService.Handlers;
 

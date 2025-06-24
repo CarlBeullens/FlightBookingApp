@@ -1,10 +1,10 @@
-using System.Globalization;
 using BookingService.Extensions;
 using BookingService.Mappers;
 using BookingService.Models;
 using BookingService.Services;
 using BookingService.Validators;
 using Microsoft.AspNetCore.Mvc;
+using Serilog.Context;
 using SharedService.DTOs.Bookings;
 using SharedService.DTOs.Flights;
 
@@ -17,24 +17,6 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
     private readonly IBookingService _service = service;
     private readonly ILogger<BookingController> _logger = logger;
     
-    [HttpGet("public/is-alive", Name = "IsAlive")]
-    public ActionResult<string> IsAlive()
-    {
-        return Ok("Booking Service is alive!");
-    }
-    
-    [HttpGet("private/is-admin", Name = "IsAdmin")]
-    public ActionResult<string> IsAdmin()
-    {
-        var cultureInfo = new CultureInfo("en-GB");
-        
-        return Ok(new
-        {
-            message = "Admin access confirmed",
-            serverTime = DateTime.Now.ToString(cultureInfo)
-        });
-    }
-
     [HttpGet("protected/all-bookings", Name = "GetAllBookings")]
     [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<Booking>>> GetAllBookingsAsync()
@@ -186,6 +168,8 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<FlightDetailsResponse>> GetFlightDetailsByIdAsync(Guid id)
     {
+        using var property = LogContext.PushProperty("FlightId", id);
+        
         try
         {
             var flightDetails = await _service.GetFlightDetailsByIdAsync(id);
@@ -195,14 +179,16 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
                 return NotFound();
             }
             
-            _logger.LogInformation("Successfully retrieved flight details for ID {FlightId}", id);
+            _logger.LogInformation("Successfully retrieved flight details");
             return Ok(flightDetails);
         }
         
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving flight details for ID {FlightId}", id);
-            return StatusCode(500, "Failed to retrieve flight details");
+            const string message = "Error retrieving flight details";
+            
+            _logger.LogError(ex, message);
+            return StatusCode(500, message);
         }
     }
 }

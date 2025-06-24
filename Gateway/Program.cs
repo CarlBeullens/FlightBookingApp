@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using System.Text;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,12 @@ builder.Services
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer", "Admin"))
     .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+
+builder.Services.AddHealthChecks()
+    .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("Localhost-Uris:BookingService")!), "booking-service")
+    .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("Localhost-Uris:FlightService")!), "flight-service")
+    .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("Localhost-Uris:PaymentService")!), "payment-service")
+    .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("Localhost-Uris:AuthService")!), "auth-service");
 
 var app = builder.Build();
 
@@ -56,5 +64,10 @@ app.MapGet("/test-admin-only", () => "Admin area")
     .Produces<string>(StatusCodes.Status403Forbidden);
 
 app.MapReverseProxy();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 await app.RunAsync();

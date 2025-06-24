@@ -11,13 +11,7 @@ public class PaymentController(IPaymentService service) : ControllerBase
 {
     private readonly IPaymentService _service = service;
     
-    [HttpGet("isAlive")]
-    public ActionResult<string> IsAlive()
-    {
-        return Ok("Payment Service is alive!");
-    }
-    
-    [HttpGet("{bookingId:guid}")]
+    [HttpGet("protected/{bookingId:guid}", Name = "GetPaymentForBooking")]
     [ProducesResponseType(typeof(PaymentDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaymentDto>> GetPayment(Guid bookingId)
@@ -47,7 +41,7 @@ public class PaymentController(IPaymentService service) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut("status")]
+    [HttpPut("protected/status", Name = "SetPaymentStatus")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaymentDto>> SetPaymentStatus([FromQuery] Guid bookingId, [FromQuery] PaymentStatus status)

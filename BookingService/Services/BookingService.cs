@@ -3,14 +3,25 @@ using BookingService.Mappers;
 using BookingService.Models;
 using BookingService.Validators;
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Polly.Registry;
+using Serilog.Context;
 using SharedService.DTOs.Bookings;
 using SharedService.DTOs.Flights;
-using SharedService.Messaging.Models.Booking;
-using SharedService.Messaging.Services;
+using SharedService.ServiceBus.EventMessages.Booking;
+using SharedService.ServiceBus.Services;
+using SharedService.Telemetry;
 
 namespace BookingService.Services;
 
-public class BookingService(BookingDbContext context, IFlightClientService flightServiceClient, ICacheService cacheService, IMessageService messageService, ILogger<BookingService> logger) 
+public class BookingService(
+    BookingDbContext context, 
+    IFlightClientService flightServiceClient, 
+    ICacheService cacheService, 
+    IMessageService messageService, 
+    ILogger<BookingService> logger,
+    IBusinessMetrics businessMetrics, 
+    ResiliencePipelineProvider<string> pipelineProvider) 
     : IBookingService
 {
     private readonly BookingDbContext _context = context;
@@ -18,6 +29,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
     private readonly ICacheService _cacheService = cacheService;
     private readonly IMessageService _messageService = messageService;
     private readonly ILogger<BookingService> _logger = logger;
+    private readonly IBusinessMetrics _businessMetrics = businessMetrics;
+    private readonly ResiliencePipeline _flightServiceResiliencePipeline = pipelineProvider.GetPipeline("flight-service-pipeline");
     
     public async Task<IReadOnlyCollection<Booking>> GetAllBookingsAsync()
     {
@@ -83,6 +96,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         }
         
         _logger.LogInformation("Booking {BookingId} created", createdBooking.Id);
+        
+        _businessMetrics.RecordBookingCreated(createdBooking.Id.ToString(), createdBooking.FlightNumber, createdBooking.TotalPrice);
 
         return booking;
     }
@@ -155,6 +170,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         var cacheKey = $"flight_{booking.FlightNumber}";
         await _cacheService.RemoveAsync(cacheKey);
         
+        _businessMetrics.RecordBookingConfirmed(id.ToString());
+        
         return Result<Booking>.Success(booking);
     }
 
@@ -208,6 +225,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         }
             
         _logger.LogInformation("Booking {BookingId} cancelled", id);
+        
+        _businessMetrics.RecordBookingCancelled(id.ToString());
             
         return Result<Booking>.Success(booking);
     }
@@ -231,22 +250,52 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
 
     public async Task<IReadOnlyCollection<FlightDetailsResponse>> GetAllFlightDetailsAsync()
     {
-        var flights = await _flightServiceClient.GetAllFlightDetailsAsync();
+        try
+        {
+            var flights = await _flightServiceResiliencePipeline.ExecuteAsync(async token =>
+            {
+                return await _flightServiceClient.GetAllFlightDetailsAsync();
+            });
 
-        return flights ?? new List<FlightDetailsResponse>();      
+            return flights.Count == 0 
+                ? new List<FlightDetailsResponse>() 
+                : flights;
+        }
+        
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving flights after all retry attempts");
+            return new List<FlightDetailsResponse>();
+        }
     }
 
     public async Task<FlightDetailsResponse?> GetFlightDetailsByIdAsync(Guid id)
     {
-        var flight = await _flightServiceClient.GetFlightDetailsByIdAsync(id);
-
-        if (flight == null)
+        using var property = LogContext.PushProperty("FlightId", id.ToString());
+        
+        try
         {
-            _logger.LogWarning("Flight with ID {FlightId} not found", id);
-            return null;
+            _logger.LogDebug("Calling FlightService");
+            
+            var flight = await _flightServiceResiliencePipeline.ExecuteAsync(async token =>
+            {
+                return await _flightServiceClient.GetFlightDetailsByIdAsync(id);
+            });
+            
+            if (flight == null)
+            {
+                _logger.LogWarning("Flight not found");
+                return null;
+            }
+            
+            return flight;
         }
         
-        return flight;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving flight after all retry attempts");
+            return null;
+        }
     }
     
     public async Task<FlightDetailsResponse?> GetFlightDetailsByReferenceAsync(string flightNumber)
@@ -259,17 +308,33 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         {
             return cachedFlight;
         }
-        
-        var flight = await _flightServiceClient.GetFlightDetailsByReferenceAsync(flightNumber);
 
-        if (flight == null)
+        using var property = LogContext.PushProperty("FlightNumber", flightNumber);
+        
+        try
         {
-            _logger.LogWarning("Flight with number {FlightReference} not found", flightNumber);
-            return null;
+            _logger.LogDebug("Calling FlightService");
+            
+            var flight = await _flightServiceResiliencePipeline.ExecuteAsync(async token =>
+            {
+                return await _flightServiceClient.GetFlightDetailsByReferenceAsync(flightNumber);
+            });
+
+            if (flight == null)
+            {
+                _logger.LogWarning("Flight not found");
+                return null;
+            }
+            
+            await _cacheService.SetAsync(cacheKey, flight);
+        
+            return flight;
         }
         
-        await _cacheService.SetAsync(cacheKey, flight);
-        
-        return flight;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving flight after all retry attempts");
+            return null;
+        }
     }
 }

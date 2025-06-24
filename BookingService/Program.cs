@@ -6,18 +6,16 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using SharedService.Security;
+using SharedService.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.SetMinimumLevel(LogLevel.Debug);
-builder.Logging.AddConsole();
+builder.AddStructuredLogging();
+builder.AddInfrastructure();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger(title: "Booking Service API");
-
-builder.AddInfrastructure();
 
 builder.Services.AddScoped<IBookingService, BookingService.Services.BookingService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
@@ -44,16 +42,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    }).AllowAnonymous();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapControllers();
-app.MapHealthChecks("api/booking/public/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
 
 app.UseApiKeyAuthentication();
 

@@ -1,9 +1,13 @@
+using Azure.Messaging.ServiceBus;
 using BookingService.Data;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Polly;
+using Polly.Retry;
 using Refit;
-using SharedService.Messaging;
+using SharedService.ServiceBus;
+using SharedService.Telemetry;
 
 namespace BookingService.Extensions;
 
@@ -39,6 +43,28 @@ public static class StartupExtensions
             options.InstanceName = "BookingService_";
         });
         
+        //resilience pipeline
+        var maxRetryAttempts = builder.Configuration.GetValue<int>("FlightService:Resilience:RetryCount", 3);
+        var retryDelay = builder.Configuration.GetValue<int>("FlightService:Resilience:BaseRetryDelaySeconds", 2);
+        var timeout = builder.Configuration.GetValue<int>("FlightService:Resilience:TimeoutSeconds", 30);
+        
+        builder.Services.AddResiliencePipeline("flight-service-pipeline", resiliencePipelineBuilder =>
+        {
+            resiliencePipelineBuilder
+                .AddRetry(new RetryStrategyOptions
+                {
+                    MaxRetryAttempts = maxRetryAttempts,
+                    BackoffType = DelayBackoffType.Exponential,
+                    Delay = TimeSpan.FromSeconds(retryDelay),
+                    OnRetry = args =>
+                    {
+                        Console.WriteLine($"FlightServiceClient retry {args.AttemptNumber + 1} after {args.RetryDelay.TotalSeconds}s delay");
+                        return ValueTask.CompletedTask;
+                    }
+                })
+                .AddTimeout(TimeSpan.FromSeconds(timeout));
+        });
+        
         // refit
         builder.Services.AddRefitClient<IFlightClientService>()
             .ConfigureHttpClient(client =>
@@ -60,8 +86,23 @@ public static class StartupExtensions
         // health checks
         builder.Services.AddHealthChecks()
             .AddCheck("booking-service", () => HealthCheckResult.Healthy())
-            .AddSqlServer(connectionString!, name: "booking-service-db");
+            .AddSqlServer(connectionString!, name: "booking-service-db")
+            .AddCheck("service-bus", () =>
+            {
+                try
+                {
+                    var client = new ServiceBusClient(serviceBusConnectionString);
+                    return HealthCheckResult.Healthy($"Connected to {client.FullyQualifiedNamespace}");
+                }
+                catch (Exception ex)
+                {
+                    return HealthCheckResult.Unhealthy("Failed to connect to Service Bus", ex);
+                }
+            });
         
+        // telemetry
+        builder.Services.AddTelemetry(builder.Configuration);
+
         return builder;
     }
 }

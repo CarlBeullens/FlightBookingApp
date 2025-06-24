@@ -2,7 +2,6 @@ using FlightService.Mappers;
 using FlightService.Models;
 using Microsoft.AspNetCore.Mvc;
 using FlightService.Services;
-using Microsoft.AspNetCore.Authorization;
 using SharedService.DTOs.Flights;
 
 namespace FlightService.Controllers;
@@ -12,12 +11,6 @@ namespace FlightService.Controllers;
 public class FlightController(IFlightService service) : ControllerBase
 {
     private readonly IFlightService _service = service;
-
-    [HttpGet("public/is-alive")]
-    public ActionResult<string> IsAlive()
-    {
-        return Ok("Flight Service is alive!");
-    }
     
     [HttpGet("public/search")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
@@ -91,7 +84,7 @@ public class FlightController(IFlightService service) : ControllerBase
         
         return Ok(flight.ToDto());
     }
-
+    
     [HttpPatch("protected/cancel/{id:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -118,7 +111,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok($"Flight {id} cancelled successfully");
     }
 
-    [HttpPatch("protected/seats/{id:guid}")]
+    [HttpPatch("private/seats/{id:guid}")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
