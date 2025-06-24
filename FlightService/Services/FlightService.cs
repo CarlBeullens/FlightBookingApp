@@ -4,8 +4,8 @@ using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using SharedService.DTOs;
 using SharedService.DTOs.Flights;
-using SharedService.Messaging.Models.Flight;
-using SharedService.Messaging.Services;
+using SharedService.ServiceBus.EventMessages.Flight;
+using SharedService.ServiceBus.Services;
 
 namespace FlightService.Services;
 

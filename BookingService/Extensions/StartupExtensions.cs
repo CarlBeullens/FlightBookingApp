@@ -1,9 +1,11 @@
+using Azure.Messaging.ServiceBus;
 using BookingService.Data;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Refit;
-using SharedService.Messaging;
+using SharedService.ServiceBus;
+using SharedService.Telemetry;
 
 namespace BookingService.Extensions;
 
@@ -60,8 +62,23 @@ public static class StartupExtensions
         // health checks
         builder.Services.AddHealthChecks()
             .AddCheck("booking-service", () => HealthCheckResult.Healthy())
-            .AddSqlServer(connectionString!, name: "booking-service-db");
+            .AddSqlServer(connectionString!, name: "booking-service-db")
+            .AddCheck("service-bus", () =>
+            {
+                try
+                {
+                    var client = new ServiceBusClient(serviceBusConnectionString);
+                    return HealthCheckResult.Healthy($"Connected to {client.FullyQualifiedNamespace}");
+                }
+                catch (Exception ex)
+                {
+                    return HealthCheckResult.Unhealthy("Failed to connect to Service Bus", ex);
+                }
+            });
         
+        // telemetry
+        builder.Services.AddTelemetry(builder.Configuration);
+
         return builder;
     }
 }

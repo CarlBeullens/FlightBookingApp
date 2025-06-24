@@ -1,7 +1,7 @@
 using PaymentService.Models;
 using PaymentService.Services;
-using SharedService.Messaging.Models.Booking;
-using SharedService.Messaging.Services;
+using SharedService.ServiceBus.EventMessages.Booking;
+using SharedService.ServiceBus.Services;
 
 namespace PaymentService.Handlers;
 

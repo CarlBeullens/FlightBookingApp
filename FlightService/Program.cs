@@ -1,3 +1,4 @@
+using Azure.Messaging.ServiceBus;
 using FlightService.Configuration;
 using FlightService.Data;
 using FlightService.Handlers;
@@ -7,8 +8,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Refit;
-using SharedService.Messaging;
 using SharedService.Security;
+using SharedService.ServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,7 +71,19 @@ builder.Services.Configure<AmadeusSettings>(
 
 builder.Services.AddHealthChecks()
     .AddCheck("flight-service", () => HealthCheckResult.Healthy())
-    .AddSqlServer(connectionString!, name: "flight-service-db");
+    .AddSqlServer(connectionString!, name: "flight-service-db")
+    .AddCheck("service-bus", () =>
+    {
+        try
+        {
+            var client = new ServiceBusClient(serviceBusConnectionString);
+            return HealthCheckResult.Healthy($"Connected to {client.FullyQualifiedNamespace}");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy("Failed to connect to Service Bus", ex);
+        }
+    });
 
 var app = builder.Build();
 
@@ -95,16 +108,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    }).AllowAnonymous();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapControllers();
-app.MapHealthChecks("api/flight/public/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
 
 app.UseApiKeyAuthentication();
 

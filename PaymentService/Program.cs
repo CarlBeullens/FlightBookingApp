@@ -1,3 +1,4 @@
+using Azure.Messaging.ServiceBus;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -5,8 +6,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using PaymentService.Data;
 using PaymentService.Handlers;
 using PaymentService.Services;
-using SharedService.Messaging;
 using SharedService.Security;
+using SharedService.ServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,7 +49,19 @@ builder.Services.AddScoped<IPaymentService, PaymentService.Services.PaymentServi
 
 builder.Services.AddHealthChecks()
     .AddCheck("payment-service", () => HealthCheckResult.Healthy())
-    .AddSqlServer(connectionString!, name: "payment-service-db");
+    .AddSqlServer(connectionString!, name: "payment-service-db")
+    .AddCheck("service-bus", () =>
+    {
+        try
+        {
+            var client = new ServiceBusClient(serviceBusConnectionString);
+            return HealthCheckResult.Healthy($"Connected to {client.FullyQualifiedNamespace}");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy("Failed to connect to Service Bus", ex);
+        }
+    });
 
 var app = builder.Build();
 
@@ -72,16 +85,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    }).AllowAnonymous();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapControllers();
-app.MapHealthChecks("api/payment/public/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
 
 app.UseApiKeyAuthentication();
 

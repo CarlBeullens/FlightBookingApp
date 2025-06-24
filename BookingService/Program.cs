@@ -6,6 +6,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using SharedService.Security;
+using SharedService.Telemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,16 +45,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    }).AllowAnonymous();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapControllers();
-app.MapHealthChecks("api/booking/public/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
 
 app.UseApiKeyAuthentication();
 

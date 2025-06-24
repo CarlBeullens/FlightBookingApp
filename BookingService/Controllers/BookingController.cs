@@ -1,4 +1,3 @@
-using System.Globalization;
 using BookingService.Extensions;
 using BookingService.Mappers;
 using BookingService.Models;
@@ -17,24 +16,6 @@ public class BookingController(IBookingService service, ILogger<BookingControlle
     private readonly IBookingService _service = service;
     private readonly ILogger<BookingController> _logger = logger;
     
-    [HttpGet("public/is-alive", Name = "IsAlive")]
-    public ActionResult<string> IsAlive()
-    {
-        return Ok("Booking Service is alive!");
-    }
-    
-    [HttpGet("private/is-admin", Name = "IsAdmin")]
-    public ActionResult<string> IsAdmin()
-    {
-        var cultureInfo = new CultureInfo("en-GB");
-        
-        return Ok(new
-        {
-            message = "Admin access confirmed",
-            serverTime = DateTime.Now.ToString(cultureInfo)
-        });
-    }
-
     [HttpGet("protected/all-bookings", Name = "GetAllBookings")]
     [ProducesResponseType(typeof(IReadOnlyCollection<Booking>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<Booking>>> GetAllBookingsAsync()

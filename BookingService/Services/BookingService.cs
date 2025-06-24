@@ -5,12 +5,19 @@ using BookingService.Validators;
 using Microsoft.EntityFrameworkCore;
 using SharedService.DTOs.Bookings;
 using SharedService.DTOs.Flights;
-using SharedService.Messaging.Models.Booking;
-using SharedService.Messaging.Services;
+using SharedService.ServiceBus.EventMessages.Booking;
+using SharedService.ServiceBus.Services;
+using SharedService.Telemetry;
 
 namespace BookingService.Services;
 
-public class BookingService(BookingDbContext context, IFlightClientService flightServiceClient, ICacheService cacheService, IMessageService messageService, ILogger<BookingService> logger) 
+public class BookingService(
+    BookingDbContext context, 
+    IFlightClientService flightServiceClient, 
+    ICacheService cacheService, 
+    IMessageService messageService, 
+    ILogger<BookingService> logger,
+    IBusinessMetrics businessMetrics) 
     : IBookingService
 {
     private readonly BookingDbContext _context = context;
@@ -18,6 +25,7 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
     private readonly ICacheService _cacheService = cacheService;
     private readonly IMessageService _messageService = messageService;
     private readonly ILogger<BookingService> _logger = logger;
+    private readonly IBusinessMetrics _businessMetrics = businessMetrics;
     
     public async Task<IReadOnlyCollection<Booking>> GetAllBookingsAsync()
     {
@@ -83,6 +91,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         }
         
         _logger.LogInformation("Booking {BookingId} created", createdBooking.Id);
+        
+        _businessMetrics.RecordBookingCreated(createdBooking.Id.ToString(), createdBooking.FlightNumber, createdBooking.TotalPrice);
 
         return booking;
     }
@@ -155,6 +165,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         var cacheKey = $"flight_{booking.FlightNumber}";
         await _cacheService.RemoveAsync(cacheKey);
         
+        _businessMetrics.RecordBookingConfirmed(id.ToString());
+        
         return Result<Booking>.Success(booking);
     }
 
@@ -208,6 +220,8 @@ public class BookingService(BookingDbContext context, IFlightClientService fligh
         }
             
         _logger.LogInformation("Booking {BookingId} cancelled", id);
+        
+        _businessMetrics.RecordBookingCancelled(id.ToString());
             
         return Result<Booking>.Success(booking);
     }
