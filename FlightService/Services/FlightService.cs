@@ -2,7 +2,6 @@ using FlightService.Data;
 using FlightService.Models;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
-using SharedService.DTOs;
 using SharedService.DTOs.Flights;
 using SharedService.ServiceBus.EventMessages.Flight;
 using SharedService.ServiceBus.Services;
@@ -72,26 +71,20 @@ public class FlightService(FlightServiceDbContext context, IMessageService messa
         return flight;
     }
 
-    public async Task<Result<Flight>> CancelFlight(Guid id)
+    public async Task<Flight> CancelFlight(Guid id)
     {
         var flight = await _context.Flights.FindAsync(id);
 
         if (flight == null)
         {
-            _logger.LogInformation("flight {Id} not found", id);
-            
-            var validationResult = new ValidationResult
-            {
-                Errors = new List<ValidationFailure>
-                {
-                    new ValidationFailure
-                    {
-                        ErrorMessage = $"Flight {id} not found"
-                    }
-                }
-            };
-            
-            return Result<Flight>.Failure(validationResult);
+            throw new KeyNotFoundException($"Flight with ID {id} not found.");
+        }
+
+        if (flight.FlightStatus == FlightStatus.Cancelled)
+        {
+            _logger.LogInformation("Flight {FlightFlightNumber} was already cancelled.", flight.FlightNumber);
+
+            return flight;
         }
         
         flight.FlightStatus = FlightStatus.Cancelled;
@@ -111,7 +104,7 @@ public class FlightService(FlightServiceDbContext context, IMessageService messa
             _logger.LogError(ex, "Error while publishing flight cancelled event for flight {Id}", id);
         }
 
-        return Result<Flight>.Success(flight);
+        return flight;
     }
 
     public async Task DeleteFlightAsync(Guid id)

@@ -14,7 +14,7 @@ public interface IFlightService
     
     Task<Flight> CreateFlightAsync(Flight flight);
 
-    public Task<Result<Flight>> CancelFlight(Guid id);
+    public Task<Flight> CancelFlight(Guid id);
     
     Task DeleteFlightAsync(Guid id);
 

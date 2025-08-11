@@ -32,10 +32,23 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Remove="Logs\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Data\Migrations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Logs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Logs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Logs\**" />
     </ItemGroup>
 
 </Project>

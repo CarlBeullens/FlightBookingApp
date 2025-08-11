@@ -14,8 +14,6 @@
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
       <PackageReference Include="Microsoft.Extensions.Azure" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
       <PackageReference Include="OpenTelemetry.Exporter.Console" />
       <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
       <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />

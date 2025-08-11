@@ -12,7 +12,7 @@ public class FlightController(IFlightService service) : ControllerBase
 {
     private readonly IFlightService _service = service;
     
-    [HttpGet("public/search")]
+    [HttpGet("public/search", Name = "SearchFlights")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> SearchFlightsAsync([FromQuery] FlightSearchRequest searchRequest)
@@ -34,7 +34,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(response);
     }
     
-    [HttpGet("protected/all-flights")]
+    [HttpGet("protected/all-flights", Name = "GetAllFlightDetails")]
     [ProducesResponseType(typeof(IReadOnlyCollection<FlightDetailsResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<FlightDetailsResponse>>> GetAllFlightDetailsAsync()
     {
@@ -45,7 +45,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(response);
     }
     
-    [HttpGet("protected/{id:guid}")]
+    [HttpGet("protected/{id:guid}", Name = "GetFlightDetailsById")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByIdAsync(Guid id)
@@ -65,7 +65,7 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flight.ToDto());
     }
 
-    [HttpGet("protected/{reference}")]
+    [HttpGet("protected/{reference}", Name = "GetFlightDetailsByReference")]
     [ProducesResponseType(typeof(FlightDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FlightDetailsResponse?>> GetFlightDetailsByReferenceAsync(string reference)
@@ -85,33 +85,17 @@ public class FlightController(IFlightService service) : ControllerBase
         return Ok(flight.ToDto());
     }
     
-    [HttpPatch("protected/cancel/{id:guid}")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [HttpPatch("private/cancel/{id:guid}", Name = "CancelFlight")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> CancelFlight(Guid id)
     {
-        var result = await _service.CancelFlight(id);
-
-        if (!result.IsSuccess)
-        {
-            var notFoundError = result.ValidationResult?.Errors
-                .FirstOrDefault(e => e.ErrorMessage.Contains("not found"));
-
-            if (notFoundError != null)
-            {
-                return NotFound(new ProblemDetails
-                {
-                    Title = "Flight Not Found",
-                    Detail = notFoundError.ErrorMessage,
-                    Status = StatusCodes.Status404NotFound
-                });
-            }
-        }
-        
-        return Ok($"Flight {id} cancelled successfully");
+        var flight = await _service.CancelFlight(id);
+    
+        return Ok($"Flight {flight.FlightNumber} cancelled successfully");
     }
 
-    [HttpPatch("private/seats/{id:guid}")]
+    [HttpPatch("private/seats/{id:guid}", Name = "UpdateAvailableSeats")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

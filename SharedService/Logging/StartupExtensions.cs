@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 
@@ -10,6 +11,8 @@ public static class StartupExtensions
 {
     public static void AddStructuredLogging(this WebApplicationBuilder builder)
     {
+        builder.Logging.ClearProviders();
+        
         var connectionString = builder.Configuration.GetConnectionString("AzureAppInsights");
         
         if (string.IsNullOrEmpty(connectionString))
@@ -28,6 +31,7 @@ public static class StartupExtensions
                 .MinimumLevel.Override("Azure.Messaging.ServiceBus", LogEventLevel.Warning) 
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware", LogEventLevel.Fatal)
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .MinimumLevel.Override("System", LogEventLevel.Warning)
                 

@@ -21,8 +21,6 @@
         </PackageVersion>
         <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.11.0" />
         <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.15" />
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
-        <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
         <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.8.1" />
         <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
         <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
@@ -31,7 +29,7 @@
         <PackageVersion Include="Refit" Version="8.0.0" />
         <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
         <PackageVersion Include="Scalar.AspNetCore" Version="2.2.7" />
-        <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
+        <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
         <PackageVersion Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
         <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.9.0.115408">
             <PrivateAssets>all</PrivateAssets>

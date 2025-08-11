@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Refit;
 using SharedService.Logging;
+using SharedService.Middleware;
 using SharedService.Security;
 using SharedService.ServiceBus;
 
@@ -84,6 +85,10 @@ builder.Services.AddHealthChecks()
         }
     });
 
+// Register the global exception handler
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -120,5 +125,7 @@ app.UseRouting();
 app.MapControllers();
 
 app.UseApiKeyAuthentication();
+
+app.UseExceptionHandler();
 
 await app.RunAsync();
